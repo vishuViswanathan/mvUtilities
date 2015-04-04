@@ -18,6 +18,7 @@ public class ControlledTextField extends JTextField{
     Window parent;
     ActivityListener actL;
 
+
     public ControlledTextField(InputControl controller, int minLen, int maxLen, Dimension size) {
         this(controller, minLen, maxLen);
         setPreferredSize(size);

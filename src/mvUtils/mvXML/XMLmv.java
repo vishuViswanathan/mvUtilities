@@ -34,7 +34,15 @@ public class XMLmv {
             return new ValAndPos("", pos);
      }
 
+    public static ValAndPos getTag(String data, String tag) {
+        return getTag(data, tag, 0);
+    }
+
     public static String putTag(String tag, String val)  {
+        return("<" + tag + ">" + val + "</" + tag + ">\n");
+    }
+
+    public static String putTag(String tag, StringBuilder val)  {
         return("<" + tag + ">" + val + "</" + tag + ">\n");
     }
 

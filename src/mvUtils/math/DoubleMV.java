@@ -25,4 +25,9 @@ public class DoubleMV {
     public double val() {
         return val;
     }
+
+    static public double round(double val, int decimals) {
+        double factor = Math.pow(10.0, decimals);
+        return Math.round(val * factor) / factor;
+    }
 }

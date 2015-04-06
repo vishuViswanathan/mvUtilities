@@ -1,6 +1,5 @@
 package mvUtils.math;
-
-import java.io.Serializable;
+import java.io.*;
 
 public class DoubleRange implements Serializable{
 	public static final int ITISOUTOFRANGE = 0;
@@ -8,7 +7,7 @@ public class DoubleRange implements Serializable{
 	public static final int ITISMAX = 2;
 	public static final int ITISMIN = 4;
 	public static final int ITSMAXANDMIN = (ITISMAX | ITISMIN);
-	
+
 	public double min;
 	public double max;
     double mid;
@@ -20,13 +19,13 @@ public class DoubleRange implements Serializable{
         max = Double.MIN_VALUE;
         mid = 0;
 	}
-	
+
 	public DoubleRange(double min, double max) {
 		this.min = min;
 		this.max = max;
         findMid();
 	}
-	
+
 	public DoubleRange(DoubleRange range) {
         this(range.min, range.max);
 //		min = range.min;
@@ -82,12 +81,12 @@ public class DoubleRange implements Serializable{
 		max = value;
         findMid();
 	}
-	
+
 	public void takeMinValue(double value) {
 		min = value;
         findMid();
 	}
-	
+
 	public double getMax() {
 		return max;
 	}
@@ -99,7 +98,7 @@ public class DoubleRange implements Serializable{
 	public boolean isinRange(double val) {
 		return (val >= min && val <= max);
 	}
-	
+
 	double range() {
 		return (max - min);
 	}
@@ -117,5 +116,13 @@ public class DoubleRange implements Serializable{
         min = Math.min(min, val);
         max = Math.max(max, val);
         findMid();
+    }
+
+    public double limitedValue(double val) {
+        if (val < min)
+            val = min;
+        if (val > max)
+            val = max;
+        return val;
     }
 }

@@ -21,6 +21,8 @@ public class DoublePoint
         y = dy;
     }
 
+    public void setXval(double dx) { x = dx;}
+
     public void setYval(double dy) {
         y = dy;
     }

@@ -1,5 +1,6 @@
 package mvUtils.math;
 
+import javax.swing.*;
 import java.text.DecimalFormat;
 import java.util.Vector;
 
@@ -9,6 +10,7 @@ import java.util.Vector;
  * Date: 3/17/12
  * Time: 7:27 PM
  * To change this template use File | Settings | File Templates.
+ * It is assumes that x is always ascending
  */
 public class XYArray {
     public int arrLen;
@@ -18,11 +20,51 @@ public class XYArray {
     DoubleMaxMin xMaxMin, yMaxMin;
     boolean yAscending = true;
     boolean yConfused = false;
+    boolean xAscending = true;
+    boolean xConfused = false;
     boolean dirChecked = false;  // checking for y value direction
     public XYArray() {
         xMaxMin = new DoubleMaxMin();
         yMaxMin = new DoubleMaxMin();
         xyVect = new Vector<DoublePoint>();
+    }
+
+    public XYArray(double x[], double y[])  {
+        this();
+        int n = Math.min(x.length, y.length);
+        for (int i = 0; i < n; i++)
+            add(new DoublePoint(x[i], y[i]));
+        setDoublePoints();
+    }
+
+    /**
+     * Crates an XY array taking the specified column data for x and y values
+     * @param multiColArray
+     * @param xColNum
+     * @param yColNum
+     */
+    public XYArray(double[][] multiColArray, int xColNum, int yColNum) {
+        this();
+        int n = multiColArray.length;  // the rows
+        for (int r = 0; r < n; r++)
+            xyVect.add(new DoublePoint(0, 0));
+        setValues(multiColArray, xColNum, yColNum);
+    }
+
+    public XYArray(Double[][] multiColArray, int xColNum, int yColNum) {
+         this();
+         int n = multiColArray.length;  // the rows
+         for (int r = 0; r < n; r++)
+             xyVect.add(new DoublePoint(0, 0));
+         setValues(multiColArray, xColNum, yColNum);
+     }
+
+    public XYArray(Double x[], Double y[])  {
+        this();
+        int n = Math.min(x.length, y.length);
+        for (int i = 0; i < n; i++)
+            add(new DoublePoint(x[i], y[i]));
+        setDoublePoints();
     }
 
     public XYArray(String dataPairStrList) {
@@ -46,6 +88,11 @@ public class XYArray {
         setDoublePoints();
         arrLen = dpRef.length;
      }
+
+    private void resetMaxMin() {
+        xMaxMin.reset();
+        yMaxMin.reset();
+    }
 
     public String valPairStr() {
         String valStr = "";
@@ -113,11 +160,46 @@ public class XYArray {
         return arrLen;
     }
 
+    public int setValues(double[][] multiColArray, int xColNum, int yColNum) {
+        resetMaxMin();
+        int retVal = 0;
+        int n = multiColArray.length;  // the rows
+        if (n == xyVect.size()) {
+            for (int r = 0; r < n; r++)
+                setValuesAt(r, multiColArray[r][xColNum], multiColArray[r][yColNum]);
+            setDoublePoints();
+            retVal = n;
+        }
+        return retVal;
+     }
+
+    public int setValues(Double[][] multiColArray, int xColNum, int yColNum) {
+        resetMaxMin();
+        int retVal = 0;
+        int n = multiColArray.length;  // the rows
+        if (n == xyVect.size()) {
+            for (int r = 0; r < n; r++)
+                setValuesAt(r, multiColArray[r][xColNum], multiColArray[r][yColNum]);
+            setDoublePoints();
+            retVal = n;
+        }
+        return retVal;
+     }
+
+    private void setValuesAt(int pos, double xVal, double yVal) {
+        xyVect.get(pos).setPoint(xVal, yVal);
+    }
+
+    public int add(double x, double y){
+        return add(new DoublePoint(x, y));
+    }
+
     public int add(DoublePoint point) {
         xyVect.add(point);
         xMaxMin.takeMaxValue(point.x);
         yMaxMin.takeMinValue(point.y);
         arrLen = xyVect.size();
+        dirChecked = false;
         return arrLen;
     }
 
@@ -197,10 +279,11 @@ public class XYArray {
 
     public double getXat(double dy) {
         setDoublePoints();
-        if (!dirChecked)
-            checkYdirection();
-        if (yConfused)
+        checkDirection(); // was checkYdirection();
+        if (yConfused) {
+            showError("Data in XYArray is yConfused!");
             return Double.NaN;
+        }
         if (yAscending)
             return getXatYasc(dy);
         else
@@ -258,6 +341,11 @@ public class XYArray {
 
      public double getYat(double dx) {
          setDoublePoints();
+         checkDirection();
+         if (!xAscending || xConfused) {
+             showError("Data in XYArray is not with X-Ascending!");
+             return Double.NaN;
+         }
         // it is assumed here that the x is uni-directional  ASC
         double diff;
         double val;
@@ -283,6 +371,7 @@ public class XYArray {
          return val;
     }
 
+
     void checkYdirection() {
         yConfused = false;
         double lastY, nowY;
@@ -297,7 +386,34 @@ public class XYArray {
                     yConfused = true;
                     break;
                 }
+                lastY = nowY;
             }
+        }
+    }
+
+    void checkXdirection() {
+        xConfused = false;
+        double lastX, nowX;
+        if (xyVect.size() > 1) {
+            lastX = xyVect.get(0).x;
+            nowX = xyVect.get(1).x;
+            xAscending =( nowX > lastX);
+            lastX = nowX;
+            for (int p = 2; p < xyVect.size(); p++){
+                nowX = xyVect.get(p).x;
+                if (!(xAscending == ( nowX > lastX))) {
+                    xConfused = true;
+                    break;
+                }
+                lastX = nowX;
+            }
+        }
+    }
+
+    void checkDirection() {
+        if (!dirChecked) {
+            checkXdirection();
+            checkYdirection();
         }
     }
 
@@ -330,6 +446,10 @@ public class XYArray {
              return true;
          else
              return false;
-     }
+    }
+
+    public void showError(String msg) {
+        JOptionPane.showMessageDialog(null, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
 
  }

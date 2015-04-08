@@ -1,4 +1,6 @@
-package mvUtils;
+package mvUtils.math;
+
+import mvUtils.display.SmartFormatter;
 
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;

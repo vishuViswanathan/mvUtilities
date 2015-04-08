@@ -1,4 +1,4 @@
-package mvUtils;
+package mvUtils.display;
 
 import java.text.DecimalFormat;
 

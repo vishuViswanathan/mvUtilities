@@ -1,4 +1,4 @@
-package mvUtils;
+package mvUtils.strings;
 
 import java.util.regex.Pattern;
 

@@ -217,17 +217,17 @@ public class MultiPairColPanel extends FramedPanel {
             return null;
     }
 
-    public void addItemPair(NumberTextField ntf, boolean bold) {
+    public void addItemPair(Component ntf, boolean bold) {
         Component compLeft =  getItemName(ntf.getName(), bold);
         Component compRight = ntf;
         addItemPair(compLeft, compRight);
     }
 
-    public void addItemPair(NumberTextField ntf) {
+    public void addItemPair(Component ntf) {
         addItemPair(ntf, false);
     }
 
-    public void addItemPair(NumberTextField ntf, boolean bAllowEdit, boolean bold) {
+    public void addItemPair(Component ntf, boolean bAllowEdit, boolean bold) {
         Component compLeft =  getItemName(ntf.getName(), bold);
         Component compRight = ntf;
         if (compRight instanceof JTextComponent)

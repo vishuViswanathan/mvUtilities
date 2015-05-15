@@ -28,12 +28,12 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
     DecimalFormat format;
     String fmtStr;
     String errMsg;
-    public String title;
+//    public String title;
     boolean allowZero = false;
     boolean notify = true;
     InputControl controller;
     Window parent;
-    JLabel label;
+//    JLabel label;
     boolean bBold = false;
     char chDec;
 
@@ -47,7 +47,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
         this.min = min;
         this.max = max;
         this.onlyInteger = onlyInteger;
-        this.title = title;
+        this.setName(title);
         setFormat(fmtStr);
 //        this.fmtStr = fmtStr;
 //        format = new DecimalFormat(fmtStr);
@@ -58,7 +58,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
         addFocusListener(this);
         //        getDocument().addDocumentListener(this);
         setHorizontalAlignment(JTextField.RIGHT);
-        label = new JLabel(title);
+//        label = new JLabel(title);
         setData(val);
 //        errMsg = "Enter value between " + format.format(min) + " and " + format.format(max);
         errMsg = "Enter value between " + min + " and " + max;
@@ -86,8 +86,8 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
     }
 
     public void setTitle(String title) {
-        this.title = title;
-        label.setText(title);
+        setName(title);
+//        label.setText(title);
     }
 
     public void setEditable(boolean bEdit) {
@@ -100,7 +100,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
     }
 
     public JLabel getLabel() {
-        return label;
+        return new JLabel(getName());
     }
 
     public void showError() {
@@ -191,7 +191,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
     }
 
     public String titleAndVal() {
-        return title + " <" + getText() + ">";
+        return getName() + " <" + getText() + ">";
     }
 
     double oldVal = Double.NEGATIVE_INFINITY;
@@ -224,7 +224,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
 
             if (controller != null)
                 controller.enableNotify(false);
-            JOptionPane.showMessageDialog(null, errMsg + " [" + textWithError + "]", title, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, errMsg + " [" + textWithError + "]", getName(), JOptionPane.ERROR_MESSAGE);
             if (controller != null)
                 controller.enableNotify(true);
             if (!(parent == null))
@@ -243,9 +243,9 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
          return getData() != oldVal;
     }
 
-    public String getName() {
-        return label.getText();
-    }
+//    public String getName() {
+//        return getName();
+//    }
 
     public ValueForExcel getValueForExcel() {
 //        String str = getText();

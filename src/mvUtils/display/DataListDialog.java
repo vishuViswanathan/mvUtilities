@@ -1,7 +1,6 @@
 package mvUtils.display;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,40 +12,397 @@ import java.awt.event.ActionListener;
  * Time: 4:00 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DataListDialog extends JDialog {
+public class DataListDialog extends FramedPanel {
     MultiPairColPanel mp;
-    JButton ok = new JButton("Ok");
-    JButton cancel = new JButton("Cancel");
+    JButton save = new JButton("Save");
+    JButton exit = new JButton("Exit");
+    JButton delete = new JButton("Delete");
+    JButton edit = new JButton("Edit");
+    JButton reset = new JButton("Reset");
+    EditResponse.Response response;
     boolean updated = false;
-    CheckDataList listChecker;
+    DataHandler dataHandler;
+    boolean allowEdit = false;
 
-    public DataListDialog(String title, CheckDataList listChecker) {
+    public DataListDialog(String title, DataHandler dataHandler) {
+        this(title, dataHandler, false);
+    }
+
+    public DataListDialog(String title, DataHandler dataHandler, boolean allowEdit) {
         super();
-        setTitle(title);
-        setModal(true);
-        this.listChecker = listChecker;
+//        setTitle(title);
+//        setModal(true);
+        this.dataHandler = dataHandler;
+        this.allowEdit = allowEdit;
         init(title);
     }
 
     void init(String title) {
         mp = new MultiPairColPanel(title);
         ButtonListener bl = new ButtonListener();
-        ok.addActionListener(bl);
-        cancel.addActionListener(bl);
+        save.addActionListener(bl);
+        exit.addActionListener(bl);
+        edit.addActionListener(bl);
+        reset.addActionListener(bl);
+        if (allowEdit)
+            delete.addActionListener(bl);
     }
 
     public void setVisible(boolean bVisible) {
+        setVisible(bVisible, false);
+    }
+
+    public void setVisible(boolean bVisible, boolean enableEdit) {
         if (bVisible) {
+            JPanel outerPanel = new JPanel(new BorderLayout());
             mp.addBlank();
-            mp.addItemPair(cancel, ok);
-            add(mp);
-            pack();
+            outerPanel.add(mp,BorderLayout.CENTER);
+            outerPanel.add(buttonPanel(), BorderLayout.SOUTH);
+            add(outerPanel);
+            setEditable(enableEdit);
         }
         super.setVisible(bVisible);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+    JPanel buttonPanel() {
+        JPanel bP = new JPanel(new GridLayout());
+        if (allowEdit) {
+            bP.add(delete);
+            bP.add(new JPanel());
+            bP.add(edit);
+            reset.setEnabled(false);
+            bP.add(reset);
+            save.setEnabled(false);
+            bP.add(save);
+        }
+        bP.add(exit);
+        return bP;
     }
 
     public boolean isUpdated() {
         return updated;
+    }
+
+    public EditResponse.Response editResponse() {
+        return response;
     }
 
     public void addItemPair(String name, Component comp, boolean bold) {
@@ -112,29 +468,51 @@ public class DataListDialog extends JDialog {
         mp.addBlank();
     }
 
+    void setEditable(boolean ena) {
+        for (Component c: mp.getComponents())
+            c.setEnabled(ena);
+        save.setEnabled(ena);
+        reset.setEnabled(ena);
+        edit.setEnabled(!ena);
+    }
+
     class ButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             Object src = e.getSource();
-            if (src == ok) {
-                ErrorStatAndMsg statAndMsg = listChecker.isDataListOK();
+            if (src == save) {
+                ErrorStatAndMsg statAndMsg = dataHandler.checkData();
                 if (statAndMsg.inError) {
                     showError(statAndMsg.msg);
                 }
                 else {
-                    updated = true;
-                    dispose();
+                    response = EditResponse.Response.SAVE;
+                    dataHandler.saveData();
+                    setEditable(false);
                 }
             }
-            else if (src == cancel) {
-                updated = false;
-                dispose();
+            else if (src == exit) {
+                response = EditResponse.Response.EXIT;
+//                dispose();
+                dataHandler.cancel();
+            }
+            else if (src == delete) {
+                response = EditResponse.Response.DELETE;
+                dataHandler.deleteData();
+//                dispose();
+            }
+            else if (src == edit) {
+                setEditable(true);
+            }
+            else if (src == reset) {
+                dataHandler.resetData();
+//                dispose();
             }
         }
     }
 
     void showError(String msg) {
         JOptionPane.showMessageDialog(this, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
-        toFront();
+//        toFront();
     }
 }

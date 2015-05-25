@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
  * Time: 4:00 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DataListDialog extends FramedPanel {
+public class DataListEditorPanel extends FramedPanel {
     MultiPairColPanel mp;
     JButton save = new JButton("Save");
     JButton exit = new JButton("Exit");
@@ -24,11 +24,11 @@ public class DataListDialog extends FramedPanel {
     DataHandler dataHandler;
     boolean allowEdit = false;
 
-    public DataListDialog(String title, DataHandler dataHandler) {
+    public DataListEditorPanel(String title, DataHandler dataHandler) {
         this(title, dataHandler, false);
     }
 
-    public DataListDialog(String title, DataHandler dataHandler, boolean allowEdit) {
+    public DataListEditorPanel(String title, DataHandler dataHandler, boolean allowEdit) {
         super();
 //        setTitle(title);
 //        setModal(true);
@@ -44,8 +44,10 @@ public class DataListDialog extends FramedPanel {
         exit.addActionListener(bl);
         edit.addActionListener(bl);
         reset.addActionListener(bl);
-        if (allowEdit)
+        if (allowEdit) {
+            delete.setEnabled(false);
             delete.addActionListener(bl);
+        }
     }
 
     public void setVisible(boolean bVisible) {
@@ -59,332 +61,15 @@ public class DataListDialog extends FramedPanel {
             outerPanel.add(mp,BorderLayout.CENTER);
             outerPanel.add(buttonPanel(), BorderLayout.SOUTH);
             add(outerPanel);
-            setEditable(enableEdit);
+            setEditable(allowEdit && enableEdit);
         }
         super.setVisible(bVisible);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
     JPanel buttonPanel() {
         JPanel bP = new JPanel(new GridLayout());
         if (allowEdit) {
+            delete.setEnabled(false);
             bP.add(delete);
             bP.add(new JPanel());
             bP.add(edit);
@@ -401,7 +86,7 @@ public class DataListDialog extends FramedPanel {
         return updated;
     }
 
-    public EditResponse.Response editResponse() {
+    public EditResponse.Response getResponse() {
         return response;
     }
 
@@ -471,6 +156,7 @@ public class DataListDialog extends FramedPanel {
     void setEditable(boolean ena) {
         for (Component c: mp.getComponents())
             c.setEnabled(ena);
+        delete.setEnabled(ena);
         save.setEnabled(ena);
         reset.setEnabled(ena);
         edit.setEnabled(!ena);
@@ -505,6 +191,7 @@ public class DataListDialog extends FramedPanel {
                 setEditable(true);
             }
             else if (src == reset) {
+                response = EditResponse.Response.RESET;
                 dataHandler.resetData();
 //                dispose();
             }

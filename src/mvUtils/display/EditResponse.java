@@ -11,7 +11,8 @@ public interface EditResponse {
     static public enum Response {
         SAVE("Save"),
         EXIT("Exit"),
-        DELETE("Delete");
+        DELETE("Delete"),
+        RESET("Reset");
         private final String responseStr;
 
         Response(String modeName) {

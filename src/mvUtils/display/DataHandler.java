@@ -10,7 +10,7 @@ package mvUtils.display;
 public interface DataHandler {
     public ErrorStatAndMsg checkData();
     public boolean saveData();
-    public boolean deleteData();
-    public boolean resetData();
+    public void deleteData();
+    public void resetData();
     public void cancel();
 }

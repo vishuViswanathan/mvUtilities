@@ -23,17 +23,20 @@ public class DataListEditorPanel extends FramedPanel {
     boolean updated = false;
     DataHandler dataHandler;
     boolean allowEdit = false;
+    boolean allowDelete = false;
 
     public DataListEditorPanel(String title, DataHandler dataHandler) {
         this(title, dataHandler, false);
     }
 
     public DataListEditorPanel(String title, DataHandler dataHandler, boolean allowEdit) {
+        this(title, dataHandler, allowEdit, false);
+    }
+    public DataListEditorPanel(String title, DataHandler dataHandler, boolean allowEdit, boolean allowDelete) {
         super();
-//        setTitle(title);
-//        setModal(true);
         this.dataHandler = dataHandler;
         this.allowEdit = allowEdit;
+        this.allowDelete = allowDelete;
         init(title);
     }
 
@@ -44,7 +47,7 @@ public class DataListEditorPanel extends FramedPanel {
         exit.addActionListener(bl);
         edit.addActionListener(bl);
         reset.addActionListener(bl);
-        if (allowEdit) {
+        if (allowEdit && allowDelete) {
             delete.setEnabled(false);
             delete.addActionListener(bl);
         }
@@ -69,8 +72,10 @@ public class DataListEditorPanel extends FramedPanel {
     JPanel buttonPanel() {
         JPanel bP = new JPanel(new GridLayout());
         if (allowEdit) {
-            delete.setEnabled(false);
-            bP.add(delete);
+            if (allowDelete) {
+                delete.setEnabled(false);
+                bP.add(delete);
+            }
             bP.add(new JPanel());
             bP.add(edit);
             reset.setEnabled(false);
@@ -80,6 +85,10 @@ public class DataListEditorPanel extends FramedPanel {
         }
         bP.add(exit);
         return bP;
+    }
+
+    public void resetAll() {
+        setEditable(false);
     }
 
     public boolean isUpdated() {
@@ -120,17 +129,6 @@ public class DataListEditorPanel extends FramedPanel {
 
     public void addItemPair(Component compLeft, Component compRight) {
         addItemPair(compLeft, false, compRight, false);
- /*
-         lastRow++;
-         gbcL.gridx = 0;
-         gbcL.gridy = lastRow;
-         add(compLeft, gbcL);
-         gbcR.gridx = 1;
-         gbcR.gridy = lastRow;
-         add(compRight, gbcR);
-         compPairs.add(new ComponentPair(compLeft, compRight));
-         rowCount++;
- */
     }
 
     public void addItemPair(Component compLeft, boolean bBoldLeft, Component compRight, boolean bBoldRight) {
@@ -153,13 +151,19 @@ public class DataListEditorPanel extends FramedPanel {
         mp.addBlank();
     }
 
+    public void addGroup() {
+        mp.addGroup();
+    }
+
     void setEditable(boolean ena) {
-        for (Component c: mp.getComponents())
-            c.setEnabled(ena);
-        delete.setEnabled(ena);
-        save.setEnabled(ena);
-        reset.setEnabled(ena);
-        edit.setEnabled(!ena);
+        mp.setEnabled(ena);
+        if (allowEdit) {
+            if (allowDelete)
+                delete.setEnabled(ena);
+            save.setEnabled(ena);
+            reset.setEnabled(ena);
+            edit.setEnabled(!ena);
+        }
     }
 
     class ButtonListener implements ActionListener {
@@ -179,13 +183,11 @@ public class DataListEditorPanel extends FramedPanel {
             }
             else if (src == exit) {
                 response = EditResponse.Response.EXIT;
-//                dispose();
                 dataHandler.cancel();
             }
             else if (src == delete) {
                 response = EditResponse.Response.DELETE;
                 dataHandler.deleteData();
-//                dispose();
             }
             else if (src == edit) {
                 setEditable(true);
@@ -193,13 +195,11 @@ public class DataListEditorPanel extends FramedPanel {
             else if (src == reset) {
                 response = EditResponse.Response.RESET;
                 dataHandler.resetData();
-//                dispose();
             }
         }
     }
 
     void showError(String msg) {
         JOptionPane.showMessageDialog(this, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
-//        toFront();
     }
 }

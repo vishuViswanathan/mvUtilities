@@ -16,4 +16,11 @@ public class ErrorStatAndMsg {
         this.inError = isError;
         this.msg = msg;
     }
+
+    public ErrorStatAndMsg add(ErrorStatAndMsg errorStat) {
+        inError |= errorStat.inError;
+        if (errorStat.inError)
+            msg += "\n" + errorStat.msg;
+        return this;
+    }
 }

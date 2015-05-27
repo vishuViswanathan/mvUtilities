@@ -17,6 +17,7 @@ public class MultiPairColPanel extends FramedPanel {
     int lastRow = 0;
     String title = "";
     boolean bHasTitle = false;
+    Vector<JPanel> groupBoxes;
     Insets insetL = new Insets(1, 1, 1, 2);
     Insets insetR = new Insets(1, 2, 1, 1);
     Insets insetLR = new Insets(1, 2, 1, 2);
@@ -55,6 +56,7 @@ public class MultiPairColPanel extends FramedPanel {
         }
         boldFont = (new JLabel()).getFont().deriveFont(Font.BOLD);
         compPairs = new Vector<ComponentPair>();
+        groupBoxes = new Vector<JPanel>();
     }
 
     public MultiPairColPanel(String title, int labelWidth, int dataWidth ) {
@@ -79,12 +81,14 @@ public class MultiPairColPanel extends FramedPanel {
         add(box, gbcL);
         gbcBoxL.gridy = -1;
         gbcBoxR.gridy = -1;
+        groupBoxes.add(box);
     }
 
     public void removeAll() {
         super.removeAll();
         if (title.length()  > 0)
             setTitle(title);
+        groupBoxes.removeAllElements();
     }
 
     public void setTitle(String title) {
@@ -200,6 +204,13 @@ public class MultiPairColPanel extends FramedPanel {
         }
     }
 
+    public void setEnabled(boolean bEna) {
+        for (Component c: getComponents())
+            c.setEnabled(bEna);
+        for (JPanel p: groupBoxes)
+            for (Component c: p.getComponents())
+                c.setEnabled(bEna);
+    }
 
     String componentString(int row, boolean bLeft) {
         if (row < rowCount) {

@@ -1,5 +1,6 @@
 package mvUtils.math;
-import java.io.*;
+
+import java.io.Serializable;
 
 public class DoubleRange implements Serializable{
 	public static final int ITISOUTOFRANGE = 0;
@@ -99,7 +100,7 @@ public class DoubleRange implements Serializable{
 		return (val >= min && val <= max);
 	}
 
-	double range() {
+	public double range() {
 		return (max - min);
 	}
 

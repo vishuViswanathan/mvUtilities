@@ -8,60 +8,57 @@ package mvUtils.math;
  */
 
 public class DoubleMaxMin
-    extends DoubleRange {
+        extends DoubleRange {
 
-  public DoubleMaxMin() {
-    reset();
-  }
-
-  public DoubleMaxMin(double min, double max) {
-    if (max > min) {
-      this.min = min;
-      this.max = max;
-    }
-    else {
-      this.min = max;
-      this.max = min;
-    }
-  }
-
-  public DoubleMaxMin(DoubleRange range) {
-    this(range.min, range.max);
-  }
-
-  public int takeNewValue(double value) {
-    int retval = 0;
-    if (value > max) {
-      max = value;
-      retval |= ITISMAX;
+    public DoubleMaxMin() {
+        reset();
     }
 
-    if (value < min) {
-      min = value;
-      retval |= ITISMIN;
+    public DoubleMaxMin(double min, double max) {
+        if (max > min) {
+            this.min = min;
+            this.max = max;
+        } else {
+            this.min = max;
+            this.max = min;
+        }
     }
-    return retval;
-  }
 
-  public void takeMaxValue(double value) {
-    boolean retval = false;
-    max = value;
-    if (value < min) {
-      min = value;
+    public DoubleMaxMin(DoubleRange range) {
+        this(range.min, range.max);
     }
-  }
 
-  public void takeMinValue(double value) {
-    boolean retval = false;
-    min = value;
-    if (value > max) {
-      max = value;
+    public int takeNewValue(double value) {
+        int retVal = 0;
+        if (value > max) {
+            max = value;
+            retVal |= ITISMAX;
+        }
+
+        if (value < min) {
+            min = value;
+            retVal |= ITISMIN;
+        }
+        return retVal;
     }
-  }
 
-  public void reset() {
-    max = Double.NEGATIVE_INFINITY;
-    min = Double.POSITIVE_INFINITY;
-  }
+    public void takeMaxValue(double value) {
+        max = value;
+        if (value < min) min = value;
+    }
+
+    public void takeMinValue(double value) {
+        min = value;
+        if (value > max) max = value;
+    }
+
+    public double mean() {
+        return (max + min) / 2;
+    }
+
+    public void reset() {
+        max = Double.NEGATIVE_INFINITY;
+        min = Double.POSITIVE_INFINITY;
+    }
 
 }

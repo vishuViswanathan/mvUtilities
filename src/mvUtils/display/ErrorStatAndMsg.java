@@ -12,15 +12,27 @@ public class ErrorStatAndMsg {
     public boolean inError = false;
     public String msg;
 
+    public ErrorStatAndMsg() {
+        msg = "";
+        inError = false;
+    }
     public ErrorStatAndMsg(boolean isError, String msg) {
         this.inError = isError;
         this.msg = msg;
     }
 
     public ErrorStatAndMsg add(ErrorStatAndMsg errorStat) {
-        inError |= errorStat.inError;
         if (errorStat.inError)
-            msg += "\n" + errorStat.msg;
+            addErrorMsg(errorStat.msg);
+        return this;
+    }
+
+    public ErrorStatAndMsg addErrorMsg(String addMsg) {
+        if (msg.length() > 0)
+            msg += " and " + addMsg;
+        else
+            msg = addMsg;
+        inError |= true;
         return this;
     }
 }

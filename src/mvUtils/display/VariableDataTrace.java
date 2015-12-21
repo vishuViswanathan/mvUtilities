@@ -61,6 +61,11 @@ public class VariableDataTrace {
         traceable = true;
     }
 
+    public String yName() {
+        return header.yName;
+    }
+
+
     public VariableDataTrace(String xName, String yName, double[] xVals, String xFormat, String yFormat, Color color) {
         this(xName, yName, xVals, xFormat, yFormat, color, GraphDisplay.LineStyle.NORMAL);
     }

@@ -15,7 +15,8 @@ import java.util.Vector;
 public class XYArray {
     public int arrLen;
     Vector<DoublePoint> xyVect;
-
+    boolean extrapolateAtHighEnd = false;
+    boolean extrapolateAtLowEnd = false;
     DoublePoint[] doublePoints;
     DoubleMaxMin xMaxMin, yMaxMin;
     boolean yAscending = true;
@@ -47,7 +48,8 @@ public class XYArray {
         this();
         int n = multiColArray.length;  // the rows
         for (int r = 0; r < n; r++)
-            xyVect.add(new DoublePoint(0, 0));
+//            xyVect.add(new DoublePoint(0, 0));
+            add(new DoublePoint(0, 0));
         setValues(multiColArray, xColNum, yColNum);
     }
 
@@ -55,7 +57,8 @@ public class XYArray {
          this();
          int n = multiColArray.length;  // the rows
          for (int r = 0; r < n; r++)
-             xyVect.add(new DoublePoint(0, 0));
+//             xyVect.add(new DoublePoint(0, 0));
+             add(new DoublePoint(0, 0));
          setValues(multiColArray, xColNum, yColNum);
      }
 
@@ -87,7 +90,12 @@ public class XYArray {
         }
         setDoublePoints();
         arrLen = dpRef.length;
-     }
+    }
+
+    public void extrapolate(boolean atLowEnd, boolean atHighEnd) {
+        extrapolateAtHighEnd = atHighEnd;
+        extrapolateAtLowEnd = atLowEnd;
+    }
 
     private void resetMaxMin() {
         xMaxMin.reset();
@@ -363,10 +371,27 @@ public class XYArray {
                         (doublePoints[iBase].x - dx);
         }
         else {
-            if (iBase == 0)
-                val = doublePoints[0].y;
-            else
-                val = doublePoints[arrLen - 1].y;
+            if (iBase == 0) {
+                if (extrapolateAtLowEnd) {
+                    double rtx1 = doublePoints[0].x;
+                    double rty1 = doublePoints[0].y;
+                    double rtx2 = doublePoints[1].x;
+                    double rty2 = doublePoints[1].y;
+                    val = rty2 + (rty1 - rty2) / (rtx1 - rtx2) * (dx - rtx2);
+                } else
+                    val = doublePoints[0].y;
+            }
+            else {
+                if (extrapolateAtHighEnd) {
+                    double rtx1 = doublePoints[arrLen - 2].x;
+                    double rty1 = doublePoints[arrLen - 2].y;
+                    double rtx2 = doublePoints[arrLen - 1].x;
+                    double rty2 = doublePoints[arrLen - 1].y;
+                    val = rty1 + (rty2 - rty1) / (rtx2 - rtx1) * (dx - rtx1);
+
+                } else
+                    val = doublePoints[arrLen - 1].y;
+            }
         }
          return val;
     }
@@ -414,6 +439,7 @@ public class XYArray {
         if (!dirChecked) {
             checkXdirection();
             checkYdirection();
+            dirChecked = true;
         }
     }
 

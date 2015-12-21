@@ -19,7 +19,7 @@ import java.util.Vector;
  * Multi columns with same X values
  */
 public class MultiColData extends GraphInfoAdapter {
-    int MAXCOLS = 10;
+    int MAXCOLS = 15;
     int cols = 0;
     int rows;
     double[] xVals;
@@ -72,6 +72,21 @@ public class MultiColData extends GraphInfoAdapter {
             return cols;
         } else
             return -1;
+    }
+
+    public int addColumn(VariableDataTrace vdt) {
+        if (cols < MAXCOLS) {
+            colNames[cols] = vdt.yName();
+            colData.put(cols, vdt);
+            cols++;
+            return cols;
+        }
+        else
+            return -1;
+    }
+
+    public int rows() {
+        return rows;
     }
 
     public int addColumn(String colName, String yFormat) {
@@ -151,13 +166,26 @@ public class MultiColData extends GraphInfoAdapter {
         return dataArr;
     }
 
-    public int addTraces(TrendsPanel tp, int count) {
+    public int addTracesOLD(TrendsPanel tp, int count) {
         int nowCount = 0;
         VariableDataTrace vdt;
         for (int t = 0;t < colData.size(); t++)   {
             vdt = colData.get(t);
             if (vdt.isTraceable())
                 tp.addTrace(this, nowCount++, vdt.color);
+        }
+        return count + nowCount;
+    }
+
+    public int addTraces(TrendsPanel tp, int count) {
+        int nowCount = 0;
+        VariableDataTrace vdt;
+        for (int t = 0;t < colData.size(); t++)   {
+            vdt = colData.get(t);
+            if (vdt.isTraceable()) {
+                tp.addTrace(this, t, vdt.color);
+                nowCount++;
+            }
         }
         return count + nowCount;
     }

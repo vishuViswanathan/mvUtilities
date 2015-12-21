@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class TraceHeader implements Serializable{
 	String traceName;
-    String yName;
+    public String yName;
     String xName = "";
     String xNameWithUnits, yNameWithUnits;
 	String xUnits;

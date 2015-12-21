@@ -44,8 +44,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
         this.controller = controller;
         if (controller != null)
             parent = controller.parent();
-        this.min = min;
-        this.max = max;
+        setLimits(min, max);
         this.onlyInteger = onlyInteger;
         this.setName(title);
         setFormat(fmtStr);
@@ -61,14 +60,25 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
 //        label = new JLabel(title);
         setData(val);
 //        errMsg = "Enter value between " + format.format(min) + " and " + format.format(max);
-        errMsg = "Enter value between " + min + " and " + max;
-        setToolTipText(errMsg);
+//        errMsg = "Enter value between " + min + " and " + max;
+//        setToolTipText(errMsg);
     }
 
     public NumberTextField(InputControl controller, double val, int size, boolean onlyInteger, double min, double max, String fmtStr,
                            String title, boolean allowZero) {
         this(controller, val, size, onlyInteger, min, max, fmtStr, title);
         this.allowZero = allowZero;
+    }
+
+    public void setLimits(double min, double max) {
+        this.min = min;
+        this.max = max;
+        setToolTip();
+    }
+
+    void setToolTip() {
+        errMsg = "Enter value between " + min + " and " + max;
+        setToolTipText(errMsg);
     }
 
     public void setNormalBackground(Color color) {
@@ -90,13 +100,15 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
 //        label.setText(title);
     }
 
+
     public void setEditable(boolean bEdit) {
         super.setEditable(bEdit);
         setBackground(Color.white);
         if (bEdit)
             setToolTipText(errMsg);
-        else
+        else {
             setToolTipText(null);
+        }   setDisabledTextColor(Color.blue);
     }
 
     public JLabel getLabel() {
@@ -120,7 +132,6 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
         double val = getData();
         return (val >= min && val <= max);
     }
-
 
     public boolean isInError() {
         inError = false;

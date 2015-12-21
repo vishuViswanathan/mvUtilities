@@ -32,10 +32,28 @@ public class XMLmv {
         }
         else
             return new ValAndPos("", pos);
-     }
+    }
 
     public static ValAndPos getTag(String data, String tag) {
         return getTag(data, tag, 0);
+    }
+
+    public static String getTokenData(String data, String token) {
+        if (data.length() > (2 * token.length() + 5)) {
+            String lcTag = token.toLowerCase();
+            String lcData = data.toLowerCase();
+            String stTag = "<" + lcTag + ">";
+            String endTag = "</"  + lcTag + ">";
+            int stFound = lcData.indexOf(stTag);
+            int stLoc =  stFound + stTag.length();
+            int endLoc = lcData.lastIndexOf(endTag);
+            if ((stFound >= 0) && (endLoc > stLoc))
+                return data.substring(stLoc, endLoc).trim();
+            else
+                return "";
+        }
+        else
+            return "";
     }
 
     public static String putTag(String tag, String val)  {
@@ -44,6 +62,14 @@ public class XMLmv {
 
     public static String putTag(String tag, StringBuilder val)  {
         return("<" + tag + ">" + val + "</" + tag + ">\n");
+    }
+
+    public static String putTagHTML(String tag, String val) {
+        return("&lt;" + tag + "&gt;" + val + "&lt;/" + tag + "&gt;\n");
+    }
+
+    public static String putTagHTML(String tag, StringBuilder val) {
+        return("&lt;" + tag + "&gt;" + val + "&lt;/" + tag + "&gt;\n");
     }
 
     public static String putTag(String tag, Number val)  {
@@ -56,6 +82,18 @@ public class XMLmv {
 
     public static String putTag(String tag, boolean val)  {
         return putTag(tag, ((val) ? "1" : "0"));
+    }
+
+    public static String putTagHTML(String tag, Number val)  {
+        return putTagHTML(tag, "" + val);
+    }
+
+    public static String putTagHTML(String tag, long val)  {
+        return putTagHTML(tag, "" + val);
+    }
+
+    public static String putTagHTML(String tag, boolean val)  {
+        return putTagHTML(tag, ((val) ? "1" : "0"));
     }
 
 // with StringBuilder

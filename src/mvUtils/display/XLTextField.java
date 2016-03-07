@@ -1,6 +1,7 @@
 package mvUtils.display;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,10 +14,16 @@ public class XLTextField extends JTextField implements XLcellData {
     boolean bBold = false;
     public XLTextField(String text, int columns) {
         super(text, columns);
+        setDefaultDisabledColor();
     }
 
     public XLTextField(String text) {
         super(text);
+        setDefaultDisabledColor();
+    }
+
+    void setDefaultDisabledColor() {
+        setDisabledTextColor(Color.MAGENTA);
     }
 
     public ValueForExcel getValueForExcel() {

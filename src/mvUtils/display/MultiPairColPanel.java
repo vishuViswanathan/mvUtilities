@@ -204,13 +204,20 @@ public class MultiPairColPanel extends FramedPanel {
         }
     }
 
-    public void setEnabled(boolean bEna) {
+    public void setEnabledOLD(boolean bEna) {
         for (Component c: getComponents())
             c.setEnabled(bEna);
         for (JPanel p: groupBoxes)
             for (Component c: p.getComponents())
                 c.setEnabled(bEna);
     }
+
+    public void setEnabled(boolean bEna) {
+        super.setEnabled(bEna);
+        for (JPanel p: groupBoxes)
+            enableComponents(p, bEna);
+    }
+
 
     String componentString(int row, boolean bLeft) {
         if (row < rowCount) {

@@ -1,6 +1,7 @@
 package mvUtils.display;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Vector;
 
 /**
@@ -30,7 +31,6 @@ public class XLComboBox extends JComboBox implements XLcellData{
     public XLComboBox(Vector items) {
         this(items, true);
     }
-
 
     public ValueForExcel getValueForExcel() {
         if (bOnlySelected)

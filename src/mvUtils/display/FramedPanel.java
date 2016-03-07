@@ -28,4 +28,20 @@ public class FramedPanel
     this(new FlowLayout());
   }
 
+  public void setEnabled(boolean bEna) {
+    enableComponents(this, bEna);
+  }
+
+  protected void enableComponents(Container container, boolean enable) {
+    Component[] components = container.getComponents();
+    for (Component component : components) {
+      component.setEnabled(enable);
+      if (component instanceof Container) {
+        enableComponents((Container)component, enable);
+      }
+    }
+  }
+
+
+
 }

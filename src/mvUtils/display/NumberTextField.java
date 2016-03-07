@@ -108,7 +108,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
             setToolTipText(errMsg);
         else {
             setToolTipText(null);
-        }   setDisabledTextColor(Color.blue);
+        }   setDisabledTextColor(Color.MAGENTA);
     }
 
     public JLabel getLabel() {

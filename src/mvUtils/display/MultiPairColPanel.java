@@ -113,6 +113,19 @@ public class MultiPairColPanel extends FramedPanel {
         return lName;
     }
 
+    /**
+     *
+     * @param textLeft
+     * @param textRight
+     * @param bBold
+     * @param horizontalPos  GridBagConstraint.EAST/ WEST/ CENTER
+     */
+    public void addItemPair(String textLeft, String textRight, boolean bBold, int horizontalPos) {
+        Component compLeft =  getItemName(textLeft, bBold);
+        Component compRight =  getItemName(textRight, bBold);
+        addItemPair(compLeft, horizontalPos, compRight, horizontalPos);
+    }
+
     public void addItemPair(String name, Component comp, boolean bold) {
         Component compLeft =  getItemName(name, bold);
         addItemPair(compLeft, bold, comp, bold);
@@ -178,6 +191,46 @@ public class MultiPairColPanel extends FramedPanel {
         compPairs.add(new ComponentPair(compLeft, compRight));
         rowCount++;
 */
+    }
+
+    /**
+     *
+     * @param compLeft
+     * @param compLeftPos GridBagConstraint.EAST/ WEST/ CENTER
+     * @param compRight
+     * @param compRightPos  GridBagConstraint.EAST/ WEST/ CENTER
+     */
+
+    public void addItemPair(Component compLeft, int compLeftPos, Component compRight, int compRightPos) {
+        if (box == null) {
+            lastRow++;
+            GridBagConstraints gbcLNow = (GridBagConstraints)gbcL.clone();
+            gbcLNow.gridx = 0;
+            gbcLNow.gridy = lastRow;
+            gbcLNow.anchor =  compLeftPos;
+            add(compLeft, gbcLNow);
+            gbcR.gridx = 1;
+            gbcR.gridy = lastRow;
+            GridBagConstraints gbcRNow = (GridBagConstraints)gbcR.clone();
+            gbcRNow.gridx = 1;
+            gbcRNow.gridy = lastRow;
+            gbcRNow.anchor =  compRightPos;
+            add(compRight, gbcRNow);
+            compPairs.add(new ComponentPair(compLeft, false, compRight, false));
+            rowCount++;
+        }
+        else {
+            gbcBoxL.gridy++;
+            GridBagConstraints gbcLNow = (GridBagConstraints)gbcBoxL.clone();
+            gbcLNow.gridx = 0;
+            box.add(compLeft, gbcLNow);
+            gbcBoxR.gridy++;
+            GridBagConstraints gbcRNow = (GridBagConstraints)gbcBoxR.clone();
+            gbcRNow.gridx = 1;
+            box.add(compRight, gbcRNow);
+            compPairs.add(new ComponentPair(compLeft, false, compRight, false));
+            rowCount++;
+        }
     }
 
     public void addItemPair(Component compLeft, boolean bBoldLeft, Component compRight, boolean bBoldRight) {

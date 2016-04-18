@@ -1,5 +1,7 @@
 package mvUtils.math;
 
+import mvUtils.display.DataWithMsg;
+
 import javax.swing.*;
 import java.text.DecimalFormat;
 import java.util.Vector;
@@ -282,7 +284,23 @@ public class XYArray {
 
          }
          return retVal;
-     }
+    }
+
+    public DataWithMsg getXatYwithStatus(double dy) {
+        DataWithMsg retVal = new DataWithMsg();
+        setDoublePoints();
+        checkDirection(); // was checkYdirection();
+        if (yConfused) {
+            retVal.setErrorMsg("Data in XYArray is yConfused!");
+        }
+        else {
+            if (yAscending)
+                retVal.setData(getXatYasc(dy));
+            else
+                retVal.setData(getXatYdsc(dy));
+        }
+        return retVal;
+    }
 
 
     public double getXat(double dy) {

@@ -23,8 +23,11 @@ public class OneParameterDialog extends JDialog {
     JButton okButt = new JButton("OK");
     JButton cancel = new JButton("Cancel");
     NumberTextField tfVal = null;
+    boolean bTextData = false;
+    JTextField textField;
     ActionListener li;
     double val;
+    String textVal;
     String title;
     String prompt;
     String fmt;
@@ -37,7 +40,6 @@ public class OneParameterDialog extends JDialog {
     public OneParameterDialog(InputControl control, String title, String okName, String cancelName, long forTime) {
         super(control.parent(), title, Dialog.ModalityType.DOCUMENT_MODAL);
         this.control = control;
-        this.prompt = prompt;
         this.title = title;
         okButt = new JButton(okName);
         cancel = new JButton(cancelName);
@@ -56,8 +58,22 @@ public class OneParameterDialog extends JDialog {
         this(control, title, "OK", "Cancel", forTime);
     }
 
+    public OneParameterDialog(InputControl control, String title, boolean bTextData) {
+        this(control, title, 0);
+    }
+
     public OneParameterDialog(InputControl control, String title) {
         this(control, title, 0);
+    }
+
+    public void setValue(String prompt, String val, int len) {
+        bTextData = true;
+        this.prompt = prompt;
+        textField = new JTextField(val, len);
+        MultiPairColPanel jp = new MultiPairColPanel("");
+        jp.addItemPair(prompt, textField);
+        dataP.add(jp);
+        proceed();
     }
 
     public void setValue(String prompt, double val, String fmt, double min, double max) {
@@ -137,18 +153,29 @@ public class OneParameterDialog extends JDialog {
         okButt.addActionListener(li);
         cancel.addActionListener(li);
         Container dlgP = getContentPane();
-        if (tfVal != null)
-            tfVal.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    NumberTextField src = (NumberTextField) e.getSource();
-                    if (!src.isInError())
-                        okButt.doClick();
-                }
-            });
+        if (bTextData) {
+            if (textField != null)
+                textField.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        NumberTextField src = (NumberTextField) e.getSource();
+                        if (!src.isInError())
+                            okButt.doClick();
+                    }
+                });
+        }
+        else {
+            if (tfVal != null)
+                tfVal.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        NumberTextField src = (NumberTextField) e.getSource();
+                        if (!src.isInError())
+                            okButt.doClick();
+                    }
+                });
+        }
         JPanel outerP = new JPanel(new BorderLayout());
         outerP.add(dataP, BorderLayout.NORTH);
         MultiPairColPanel jp = new MultiPairColPanel("");
-//        jp.addItemPair(tfVal);
         jp.addItemPair(cancel, okButt);
         outerP.add(jp, BorderLayout.SOUTH);
         dlgP.add(outerP);
@@ -156,11 +183,18 @@ public class OneParameterDialog extends JDialog {
     }
 
     void noteValuesFromUI() {
-        val = tfVal.getData();
+        if (bTextData)
+            textVal = textField.getText();
+        else
+            val = tfVal.getData();
     }
 
     public double getVal() {
         return val;
+    }
+
+    public String getTextVal() {
+        return textVal;
     }
 
     public boolean isOk() {

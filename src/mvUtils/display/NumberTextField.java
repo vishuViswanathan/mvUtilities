@@ -16,6 +16,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Vector;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,6 +43,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
 //    JLabel label;
     boolean bBold = false;
     char chDec;
+    Vector<EditListener> editListeners;
 
     public NumberTextField(InputControl controller, double val, int size, boolean onlyInteger, double min, double max, String fmtStr,
                            String title) {
@@ -64,6 +66,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
         //        getDocument().addDocumentListener(this);
         setHorizontalAlignment(JTextField.RIGHT);
         setData(val);
+        editListeners = new Vector<>();
 //        setUndoAndRedo();
     }
 
@@ -71,6 +74,16 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
                            String title, boolean allowZero) {
         this(controller, val, size, onlyInteger, min, max, fmtStr, title);
         this.allowZero = allowZero;
+    }
+
+    public void addEditListener(EditListener li) {
+        if(!editListeners.contains(li))
+            editListeners.add(li);
+    }
+
+    public void removedEditListener(EditListener li) {
+        if(!editListeners.contains(li))
+            editListeners.remove(li);
     }
 
     void setUndoAndRedo() {
@@ -264,7 +277,13 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
                 takeNote();
     }
 
+    void informEditListeners() {
+        for (EditListener eL: editListeners)
+            eL.edited();
+    }
+
     public void actionPerformed(ActionEvent te) {
+        informEditListeners();
         if (controller != null)
             if (controller.canNotify())
                 takeNote();

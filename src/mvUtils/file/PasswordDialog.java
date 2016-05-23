@@ -21,10 +21,12 @@ public class PasswordDialog extends JDialog {
     JButton cancel = new JButton("Cancel");
     JTextField nameField = new JTextField(15);
     JPasswordField passwordField = new JPasswordField(15);
+    JPasswordField repeatPasswordField = new JPasswordField(15);
     String name;
     String password;
     boolean allOK = false;
     int minLength = 6;
+    boolean newUser = false;
 //    String regx = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.@#$%&])[^\\s]{" + minLength + ",}$";
     String regx = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])[^\\s]{" + minLength + ",}$";
     String passwordToolTip = "<html>Password must of min " + minLength + " characters length<p>with at least one each of <p>" +
@@ -32,11 +34,16 @@ public class PasswordDialog extends JDialog {
         "one upper case Letter <p>one lower case letter <p>and one of @ # $ % & ";
 
     public PasswordDialog(String title) {
-        this(title, null, null);
-      }
+        this(title, false);
+    }
 
-    public PasswordDialog(String title, String regx, String passwordToolTip) {
+    public PasswordDialog(String title, boolean newUser) {
+        this(title, newUser, null, null);
+    }
+
+    public PasswordDialog(String title, boolean newUser, String regx, String passwordToolTip) {
         super();
+        this.newUser = newUser;
         setTitle(title);
         setModal(true);
         if (regx != null) {
@@ -55,6 +62,8 @@ public class PasswordDialog extends JDialog {
         MultiPairColPanel mp= new MultiPairColPanel("");
         mp.addItemPair("User Name", nameField);
         mp.addItemPair("Password", passwordField);
+        if (newUser)
+            mp.addItemPair("Repeat Password", repeatPasswordField);
         mp.addBlank();
         MultiPairColPanel buttonPanel = new MultiPairColPanel("");
         buttonPanel.addItemPair(cancel, okButt);
@@ -102,8 +111,18 @@ public class PasswordDialog extends JDialog {
         allOK = false;
         name = nameField.getText();
         password = new String(passwordField.getPassword());
-        if ((name.length() > 2) && checkPassword(password))
-            allOK = true;
+        if (name.length() > 2) {
+            if (newUser) {
+                String repeatPassword = new String(repeatPasswordField.getPassword());
+                if (password.equals(repeatPassword)) {
+                    if (checkPassword(password))
+                        allOK = true;
+                } else
+                    showError("Password and the repeat do not match");
+            }
+            else
+                allOK = true;
+        }
         return allOK;
     }
 
@@ -128,7 +147,7 @@ public class PasswordDialog extends JDialog {
                     closeThisWindow();
                 }
                 else
-                    showError((passwordToolTip == null) ? "Name/ Password NOT acceptable" : passwordToolTip);
+                    showError((passwordToolTip == null || newUser) ? "Name/ Password NOT acceptable" : passwordToolTip);
             }
             else if (src == cancel) {
                 allOK = false;

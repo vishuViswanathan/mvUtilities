@@ -19,7 +19,7 @@ public class StatusWithMessage {
     }
 
     public StatusWithMessage(String msgSeparator) {
-        this.msgSeparator = ", ";
+        this.msgSeparator = msgSeparator;
     }
 
     public DataStat getDataStatus() {

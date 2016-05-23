@@ -177,8 +177,8 @@ public class DataListEditorPanel extends FramedPanel {
                 }
                 else {
                     response = EditResponse.Response.SAVE;
-                    dataHandler.saveData();
-                    setEditable(false);
+                    if (dataHandler.saveData())
+                        setEditable(false);
                 }
             }
             else if (src == exit) {

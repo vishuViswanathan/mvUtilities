@@ -75,4 +75,10 @@ public class DataWithMsg {
         status = DataStat.WithInfoMsg;
         valid = true;
     }
+
+    public void setData(String data) {
+        stringValue = data;
+        status = DataStat.OK;
+        valid = true;
+    }
 }

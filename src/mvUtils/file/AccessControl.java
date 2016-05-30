@@ -17,7 +17,7 @@ import java.util.Vector;
  */
 public class AccessControl {
     String accessFileCode = "accessData1234567890";
-    boolean asJNLP = false;
+    protected boolean asJNLP = false;
     Vector<String[]> passList;
     int maxFileLength = 100000;
     String newLine = "\r\n";
@@ -26,7 +26,7 @@ public class AccessControl {
     String passwordToolTip = "<html>Password must of min " + 6 + " characters length<p>with at least one each of <p>" +
             "a number <p>" +
             "one upper case Letter <p>one lower case letter <p>and one of @ # $ % & ";
-    String filePath;
+    protected String filePath;
     String suggestedExtension;
     String suggestedFileName;
 
@@ -40,6 +40,18 @@ public class AccessControl {
             this.regx = passwordRegx;
             this.passwordToolTip = passwordToolTip;
         }
+    }
+
+    public void setAsJNLP()  {
+        this.asJNLP = true;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public void setsuggestedExtension(String suggestedExtension) {
+        this.suggestedExtension = suggestedExtension;
     }
 
     public StatusWithMessage getAndSaveNewAccess(String accessString, String title) {
@@ -142,7 +154,7 @@ public class AccessControl {
         return retVal;
     }
 
-    protected StatusWithMessage readPasswordFile() {
+    public StatusWithMessage readPasswordFile() {
         StatusWithMessage retVal = new StatusWithMessage();
         if (asJNLP) {
             try {
@@ -182,7 +194,7 @@ public class AccessControl {
         return retVal;
     }
 
-    protected StatusWithMessage saveToPasswordFile() {
+    public StatusWithMessage saveToPasswordFile() {
         StatusWithMessage retVal = new StatusWithMessage();
         if (asJNLP) {
             if (!JNLPFileHandler.saveToFile(dataAsString(), suggestedExtension, suggestedFileName))

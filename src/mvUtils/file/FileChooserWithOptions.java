@@ -1,8 +1,11 @@
 package mvUtils.file;
 
+import mvUtils.display.DataWithMsg;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.io.FilenameFilter;
 
 /**
  * Created by IntelliJ IDEA.
@@ -92,5 +95,39 @@ public class FileChooserWithOptions extends JFileChooser {
             }
         }
         super.approveSelection();
+    }
+
+    /**
+     * Returns the first file matching the extension specified.
+     * @param dirPath
+     * @param extension
+     * @param onlyOneFile  If true, returns error in more than one file exists
+     *                     if not true, gets the first matcching file with InfoMessage stating existence
+     *                     of more files
+     * @return   The stringValue of the retVal has the file path
+     */
+    public static DataWithMsg getOneExistingFilepath(String dirPath, final String extension, boolean onlyOneFile) {
+        DataWithMsg retVal = new DataWithMsg();
+        File folder = new File(dirPath);
+        String basePath = folder.getAbsolutePath();
+        File[] files = folder.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.endsWith("." + extension);
+            }
+        });
+        if (files.length < 1) {
+            retVal.setErrorMsg("Unable to locate any file with extension " + extension + "!");
+        }
+        else {
+            retVal.setData(files[0].getAbsolutePath());
+            if (files.length > 1) {
+                String msg = "There are more than one file with extension " + extension;
+                if (onlyOneFile)
+                    retVal.setErrorMsg(msg + "!");
+                else
+                    retVal.setInfoMsg(msg);
+            }
+        }
+        return retVal;
     }
 }

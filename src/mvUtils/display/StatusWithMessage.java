@@ -8,6 +8,7 @@ package mvUtils.display;
  * To change this template use File | Settings | File Templates.
  */
 public class StatusWithMessage {
+    public enum DataStat1 {OK, WithInfoMsg, WithErrorMsg}
     public enum DataStat {OK, WithInfoMsg, WithErrorMsg;}
     protected DataStat dataStat = DataStat.OK;
     String msgSeparator;

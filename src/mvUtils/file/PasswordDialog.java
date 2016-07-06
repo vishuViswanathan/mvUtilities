@@ -1,6 +1,5 @@
 package mvUtils.file;
 
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import mvUtils.display.FramedPanel;
 import mvUtils.display.MultiPairColPanel;
 
@@ -8,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.regex.*;
 
 /**
  * User: M Viswanathan
@@ -25,11 +23,12 @@ public class PasswordDialog extends JDialog {
     String name;
     String password;
     boolean allOK = false;
-    int minLength = 6;
+    static int minNameLength = 3;
+    int minPasswordLength = 6;
     boolean newUser = false;
 //    String regx = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.@#$%&])[^\\s]{" + minLength + ",}$";
-    String regx = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])[^\\s]{" + minLength + ",}$";
-    String passwordToolTip = "<html>Password must of min " + minLength + " characters length<p>with at least one each of <p>" +
+    String regx = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])[^\\s]{" + minPasswordLength + ",}$";
+    String passwordToolTip = "<html>Password must of min " + minPasswordLength + " characters length<p>with at least one each of <p>" +
             "a number <p>" +
         "one upper case Letter <p>one lower case letter <p>and one of @ # $ % & ";
 
@@ -94,7 +93,7 @@ public class PasswordDialog extends JDialog {
 
     boolean checkPassword(String pwd)  {
         if (regx == null) {
-            if (pwd.length() < minLength) return false;
+            if (pwd.length() < minPasswordLength) return false;
 //            if (!pwd.substring(1).matches("[a-z]")) return false;
             if (!pwd.matches("[0-9]")) return false;
             if (!pwd.matches("[a-z]")) return false;
@@ -107,11 +106,15 @@ public class PasswordDialog extends JDialog {
             return pwd.matches(regx);
     }
 
+    public static boolean checkNameOK(String name) {
+        return (name != null && name.length() >= minNameLength);
+    }
+
     boolean takeData() {
         allOK = false;
         name = nameField.getText();
         password = new String(passwordField.getPassword());
-        if (name.length() > 2) {
+        if (checkNameOK(name)) {
             if (newUser) {
                 String repeatPassword = new String(repeatPasswordField.getPassword());
                 if (password.equals(repeatPassword)) {

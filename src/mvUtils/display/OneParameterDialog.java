@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.TimerTask;
 
+
 /**
  * Created by IntelliJ IDEA.
  * User: M Viswanathan
@@ -37,9 +38,12 @@ public class OneParameterDialog extends JDialog {
     java.util.Timer timer;
     JPanel dataP = new JPanel();
     boolean bYesNo = false;
+    Window parent = null;
     public OneParameterDialog(InputControl control, String title, String okName, String cancelName, long forTime) {
         super(control.parent(), title, Dialog.ModalityType.DOCUMENT_MODAL);
         this.control = control;
+        if (control != null)
+            parent = control.parent();
         this.title = title;
         okButt = new JButton(okName);
         cancel = new JButton(cancelName);
@@ -157,9 +161,7 @@ public class OneParameterDialog extends JDialog {
             if (textField != null)
                 textField.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        NumberTextField src = (NumberTextField) e.getSource();
-                        if (!src.isInError())
-                            okButt.doClick();
+                        okButt.doClick();
                     }
                 });
         }
@@ -204,7 +206,8 @@ public class OneParameterDialog extends JDialog {
     void closeThisWindow() {
         setVisible(false);
         dispose();
-        control.parent().setVisible(true);
+        if (parent != null)
+            parent.setVisible(true);
     }
 
     class CloseDialogTask extends TimerTask {
@@ -218,5 +221,28 @@ public class OneParameterDialog extends JDialog {
             timer.purge();
             okButt.doClick();
         }
+    }
+
+    public static void main(String[] args) {
+        OneParameterDialog dlg = new OneParameterDialog(new InputControl() {
+            @Override
+            public boolean canNotify() {
+                return false;
+            }
+
+            @Override
+            public void enableNotify(boolean ena) {
+
+            }
+
+            @Override
+            public Window parent() {
+                return null;
+            }
+        }, "IP address of OPC server", true);
+        dlg.setValue("IP address of OPC Server:", "ole Val", 20);
+        dlg.setVisible(true);
+        if (dlg.isOk())
+            System.out.println("New Value = " + dlg.getTextVal());
     }
 }

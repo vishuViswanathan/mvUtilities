@@ -1,9 +1,12 @@
 package mvUtils.file;
 
+import mvUtils.display.InputControl;
+import mvUtils.display.OneParameterDialog;
 import mvUtils.display.StatusWithMessage;
 import mvUtils.jnlp.JNLPFileHandler;
 
 import javax.jnlp.FileContents;
+import java.awt.*;
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -73,6 +76,37 @@ public class AccessControl {
         if (nameHash != null && passWordHash != null) {
             retVal = saveToPassList(nameHash, passWordHash);
         }
+        return retVal;
+    }
+
+    public StatusWithMessage getAndDeleteAccess(String accessString, String title) {
+        StatusWithMessage retVal = new StatusWithMessage();
+        OneParameterDialog pDlg;
+        pDlg = new OneParameterDialog(new InputControl() {
+            @Override
+            public boolean canNotify() {
+                return false;
+            }
+
+            @Override
+            public void enableNotify(boolean ena) {
+
+            }
+
+            @Override
+            public Window parent() {
+                return null;
+            }
+        }, title, true);
+        pDlg.setValue("Enter User name to delete", "", 10);
+        pDlg.setLocationRelativeTo(null);
+        pDlg.setVisible(true);
+        if (pDlg.isOk()) {
+            String name = pDlg.getTextVal();
+            if (PasswordDialog.checkNameOK(name))
+                retVal = deleteAccess(accessString, name);
+        } else
+            retVal.addErrorMessage("Name is not acceptable");
         return retVal;
     }
 

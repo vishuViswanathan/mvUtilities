@@ -492,6 +492,14 @@ public class XYArray {
              return false;
     }
 
+    public String toString() {
+        StringBuilder retVal = new StringBuilder("XYArray: len " + arrLen + " [");
+        for (DoublePoint oneP: doublePoints)
+            retVal.append("(" + oneP + ")");
+        retVal.append("]");
+        return retVal.toString();
+    }
+
     public void showError(String msg) {
         JOptionPane.showMessageDialog(null, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
     }

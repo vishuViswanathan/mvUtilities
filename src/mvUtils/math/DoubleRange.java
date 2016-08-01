@@ -1,4 +1,6 @@
 package mvUtils.math;
+import mvUtils.display.StatusWithMessage;
+
 import java.io.*;
 
 public class DoubleRange implements Serializable{
@@ -98,6 +100,15 @@ public class DoubleRange implements Serializable{
 	public boolean isinRange(double val) {
 		return (val >= min && val <= max);
 	}
+
+    public StatusWithMessage checkAStatus(double value) {
+        StatusWithMessage status = new StatusWithMessage();
+        if (value > max)
+            status.setErrorMessage("More than the allowed " + max);
+        else if (value < min)
+            status.setErrorMessage("Less than the allowed " + min);
+        return status;
+    }
 
 	double range() {
 		return (max - min);

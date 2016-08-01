@@ -137,7 +137,10 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
     }
 
     void setToolTip() {
-        errMsg = "Enter value between " + min + " and " + max;
+        if (onlyInteger)
+            errMsg = "Enter an INTEGER Value  between " + (int)min + " and " + (int)max;
+        else
+            errMsg = "Enter Value  between " + min + " and " + max;
         setToolTipText(errMsg);
     }
 
@@ -218,7 +221,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
             }
             if (!inError) {
                 if ((allowZero && (val == 0)) || (val >= min && val <= max)) {
-                    setData(val);
+                    setDataNoCheck(val);
                 } else
                     inError = true;
             }
@@ -229,22 +232,24 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
 
     public void setData(double val) {
         notify = false;
-//        if (val == 0 && allowZero)
-//            setText("");
-//        else
+        String txt = format.format(val);
+        setText(txt);
+        isInError();
+        showError();
+        notify = true;
+    }
+
+    void setDataNoCheck(double val) {
         String txt = format.format(val);
         setText(txt);
         showError();
-//        resetError();
         notify = true;
+
     }
 
     public String format(double val) {
         return format.format(val);
     }
-
-
-
 
     public double getData() {
         textWithError = getText();
@@ -298,7 +303,6 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
 
     void takeNote() {
         if (isInError()) {
-
             if (controller != null)
                 controller.enableNotify(false);
             JOptionPane.showMessageDialog(null, errMsg + " [" + textWithError + "]", getName(), JOptionPane.ERROR_MESSAGE);

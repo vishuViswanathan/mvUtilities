@@ -13,10 +13,7 @@ public class SimpleDialog {
     static public void showMessage(Component parentComponent, String title, String msg) {
         JOptionPane op = new JOptionPane(msg, JOptionPane.INFORMATION_MESSAGE);
         JDialog dlg = op.createDialog(parentComponent, title);
-//        if (parentComponent != null)
-            dlg.setLocationRelativeTo(parentComponent);
-//        else
-//            dlg.setLocation(50, 50);
+        dlg.setLocationRelativeTo(parentComponent);
         dlg.toFront();
         dlg.setVisible(true);
     }
@@ -24,10 +21,7 @@ public class SimpleDialog {
     static public void showError(Component parentComponent, String title, String msg) {
         JOptionPane op = new JOptionPane(msg, JOptionPane.ERROR_MESSAGE);
         JDialog dlg = op.createDialog(parentComponent, title);
-//        if (parentComponent != null)
-            dlg.setLocationRelativeTo(parentComponent);
-//        else
-//            dlg.setLocation(50, 50);
+        dlg.setLocationRelativeTo(parentComponent);
         dlg.toFront();
         dlg.setVisible(true);
     }

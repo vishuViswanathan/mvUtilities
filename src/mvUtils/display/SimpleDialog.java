@@ -14,7 +14,6 @@ public class SimpleDialog {
         JOptionPane op = new JOptionPane(msg, JOptionPane.INFORMATION_MESSAGE);
         JDialog dlg = op.createDialog(parentComponent, title);
 //        if (parentComponent != null)
-//        some dumy remarks
             dlg.setLocationRelativeTo(parentComponent);
 //        else
 //            dlg.setLocation(50, 50);

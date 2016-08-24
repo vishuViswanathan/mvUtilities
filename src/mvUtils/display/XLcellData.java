@@ -8,7 +8,7 @@ package mvUtils.display;
  * To change this template use File | Settings | File Templates.
  */
 public interface XLcellData {
-    public ValueForExcel getValueForExcel();
-    public String getFmtStr();
-    public boolean isEnabled();
+    ValueForExcel getValueForExcel();
+    String getFmtStr();
+    boolean isEnabled();
 }

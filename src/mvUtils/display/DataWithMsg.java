@@ -8,7 +8,7 @@ package mvUtils.display;
  * To change this template use File | Settings | File Templates.
  */
 public class DataWithMsg {
-    public enum DataStat {OK, WithDebugMsg, WithInfoMsg, WithErrorMsg;}
+    public enum DataStat {OK, WithDebugMsg, WithInfoMsg, WithErrorMsg}
     public double doubleValue = 0.0D / 0.0;
     public float floatValue = 0.0f / 0.0f;
     public boolean booleanValue = false;

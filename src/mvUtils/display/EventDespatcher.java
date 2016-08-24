@@ -10,7 +10,7 @@ import java.awt.event.MouseListener;
  */
 
 public interface EventDespatcher {
-	public void addFocusListener(FocusListener fl);
-	public void addMouseListener(MouseListener ml);
-	public void addComponentListener(ComponentListener cl);
+	void addFocusListener(FocusListener fl);
+	void addMouseListener(MouseListener ml);
+	void addComponentListener(ComponentListener cl);
 }

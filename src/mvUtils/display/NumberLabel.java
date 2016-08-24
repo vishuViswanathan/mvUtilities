@@ -94,8 +94,7 @@ public class NumberLabel extends JLabel implements XLcellData{
      }
 
     public double getData() {
-        String textWithError = getText();
-        String data = textWithError;
+        String data = getText();
         if(chDec == ',')  {
             data = data.replace(".", "");
             data = data.replace(",", ".");

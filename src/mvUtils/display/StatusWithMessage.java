@@ -9,7 +9,7 @@ package mvUtils.display;
  */
 public class StatusWithMessage {
     public enum DataStat1 {OK, WithInfoMsg, WithErrorMsg}
-    public enum DataStat {OK, WithInfoMsg, WithErrorMsg;}
+    public enum DataStat {OK, WithInfoMsg, WithErrorMsg}
     protected DataStat dataStat = DataStat.OK;
     String msgSeparator;
     String errMsg = "";

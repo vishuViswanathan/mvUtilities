@@ -68,10 +68,7 @@ public class SimpleDialog {
         dlg.setLocationRelativeTo(parentComponent);
         dlg.setVisible(true);
         double resp = dlg.getVal();
-        if (resp == JOptionPane.YES_OPTION)
-            return true;
-        else
-            return false;
+        return resp == JOptionPane.YES_OPTION;
     }
 
     public static void main(String[] args) {

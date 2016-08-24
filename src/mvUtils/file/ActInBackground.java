@@ -8,7 +8,8 @@ package mvUtils.file;
  */
 public class ActInBackground {
     public void doInBackground() {
-    };
+    }
+
     public void done() {
-    };
+    }
 }

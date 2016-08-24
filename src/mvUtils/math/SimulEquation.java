@@ -75,9 +75,9 @@ public final class SimulEquation implements Serializable {
 			return null;
 		}
 
-		double[][] arrayCopy = (double[][])array.clone();
+		double[][] arrayCopy = array.clone();
 		for (int row = 0; row < unknowns; row++)
-				arrayCopy[row] = (double[])array[row].clone();
+				arrayCopy[row] = array[row].clone();
 
 		double[] retval = new double[unknowns];
 		if (unknowns == 1)

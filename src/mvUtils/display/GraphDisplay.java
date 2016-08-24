@@ -25,7 +25,7 @@ public class GraphDisplay {
     public static final int CURSVALPANALATLEFT = 2;
     public static final int CURSVALPANALATRIGHT = 3;
 
-    public static enum LineStyle {NORMAL, DASHED, DOTTED; }
+    public enum LineStyle {NORMAL, DASHED, DOTTED}
 
     GraphInfo allGInfo;
     Vector<OneTrace> traces;
@@ -74,7 +74,7 @@ public class GraphDisplay {
         this.curValPanelLoc = curValPanelLoc;
         vlYName = new Vector<JLabel>();
         if (curValPanelLoc == CURSVALPANALATBOTTOM){
-            int rows = (int)((numTraces + 1) / 4);
+            int rows = (numTraces + 1) / 4;
 //            rows = (rows < 1)? 1: rows;
             int cols = 4;
 //            if (rows == 1)
@@ -329,7 +329,7 @@ public class GraphDisplay {
         if (traceToShow < 0) {
             setCommonGraphSize();
             for (int trace = 0; trace < numTraces; trace++) {
-                oneTrace = (OneTrace) traces.elementAt(trace);
+                oneTrace = traces.elementAt(trace);
 //          oneTrace.setGraphSize(graphRect, intOrigin);
                 oneTrace.setGraphSize(graphRect, intOrigin, xCommScale, yCommScale);
             }
@@ -341,18 +341,18 @@ public class GraphDisplay {
 //        setCommonGraphSize();
             drawCommonAxes(g);
             for (int trace = 0; trace < numTraces; trace++) {
-                oneTrace = (OneTrace) traces.elementAt(trace);
+                oneTrace = traces.elementAt(trace);
                 oneTrace.drawTrace(g, true); //refresh);
             }
         } else {
-            oneTrace = (OneTrace) traces.elementAt(traceToShow);
+            oneTrace = traces.elementAt(traceToShow);
             oneTrace.setGraphSize(graphRect, intOrigin);
             g.setColor(Color.black);
             Rectangle r = graphRect;
             if (basicData != null) {
                 basicData.drawBasePic(g, graphRect, intOrigin);
             }
-            ((OneTrace) traces.elementAt(traceScale)).drawAxes(g);
+            traces.elementAt(traceScale).drawAxes(g);
 
             oneTrace.drawTrace(g, true); //refresh);
         }
@@ -449,19 +449,19 @@ public class GraphDisplay {
     void setCursorVals(int x) {
         OneTrace ot;
         if (traceToShow >= 0)
-            ot = (OneTrace) traces.elementAt(traceToShow);
+            ot = traces.elementAt(traceToShow);
         else
-            ot = (OneTrace) traces.elementAt(0);  // multi trace
+            ot = traces.elementAt(0);  // multi trace
         ot.showCursorXVal(x);
 //        tfXpos.setText(SetNumberFormat.format((double) ot.getXdouble(x),
 //                 ot.getXFormat()));
 
         if (traceToShow >= 0) {     // one trace shown
-            ot = (OneTrace) traces.elementAt(traceToShow);
+            ot = traces.elementAt(traceToShow);
             ot.showCursorYVal(x);
         } else {
             for (int n = 0; n < numTraces; n++) {
-                ot = (OneTrace) traces.elementAt(n);
+                ot = traces.elementAt(n);
                 ot.showCursorYVal(x);
             }
         }
@@ -614,14 +614,14 @@ public class GraphDisplay {
                 if (nPoints < 1)
                     yTextF.setText("NO DATA");
                 else
-                    yTextF.setText(SetNumberFormat.format((double)getValueAtIntPos(x)));
+                    yTextF.setText(SetNumberFormat.format(getValueAtIntPos(x)));
             }
         }
 
         void showCursorXVal(int x) {
             if (bShowVal) {
                 if (nPoints > 0)
-                    xTextF.setText(SetNumberFormat.format((double)getXdouble(x)));
+                    xTextF.setText(SetNumberFormat.format(getXdouble(x)));
                 else
                     xTextF.setText("NO DATA");
             }

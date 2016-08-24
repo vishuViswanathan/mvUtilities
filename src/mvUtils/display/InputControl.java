@@ -10,9 +10,9 @@ package mvUtils.display;
  * To change this template use File | Settings | File Templates.
  */
 public interface InputControl {
-    public boolean canNotify();
+    boolean canNotify();
 
-    public void enableNotify(boolean ena);
+    void enableNotify(boolean ena);
 
-    public Window parent();
+    Window parent();
 }

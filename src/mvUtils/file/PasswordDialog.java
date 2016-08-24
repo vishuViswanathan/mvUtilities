@@ -99,8 +99,7 @@ public class PasswordDialog extends JDialog {
             if (!pwd.matches("[a-z]")) return false;
             if (!pwd.matches("[A-Z]")) return false;
             if (!pwd.matches("[%@$^]")) return false;
-            if (pwd.indexOf(" ") >= 0) return false;
-            return true;
+            return pwd.indexOf(" ") < 0;
         }
         else
             return pwd.matches(regx);

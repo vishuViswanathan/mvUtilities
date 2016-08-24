@@ -8,9 +8,9 @@ package mvUtils.display;
  * To change this template use File | Settings | File Templates.
  */
 public interface DataHandler {
-    public ErrorStatAndMsg checkData();
-    public boolean saveData();
-    public void deleteData();
-    public void resetData();
-    public void cancel();
+    ErrorStatAndMsg checkData();
+    boolean saveData();
+    void deleteData();
+    void resetData();
+    void cancel();
 }

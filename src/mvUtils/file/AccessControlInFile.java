@@ -93,34 +93,34 @@ public class AccessControlInFile extends AccessControl {
         return retVal;
     }
 
-    public static void main(String[] args) {
-        String path = "j:/mvUtilities/testing/passList.txt";
-        try {
-            AccessControlInFile access = new AccessControlInFile(path);
-            StatusWithMessage st1 = access.addNewAccess("EXPERT1", "vishuExpert", "Expert0001$");
-            System.out.println("" + st1.getDataStatus() + ":" + st1.getErrorMessage());
-            boolean isOK = access.checkPassword("EXPERT1", "vishuExpert", "Vis0001$") ;
-            System.out.println("EXPERT1" + ":vishuExpert" +  ":Vis0001$ " + st1.getDataStatus() + ":" + isOK);
-            isOK = access.checkPassword("EXPERT1", "vishuExpert", "Expert0001$") ;
-            System.out.println("EXPERT1" + ":vishuExpert" +  ":Expert0001$: " + st1.getDataStatus() + ":" + isOK);
-            isOK = access.checkPassword("EXPERT", "vishuNew", "pass001") ;
-            System.out.println("EXPERT" + ":vishuNew" +  ":pass001: " + st1.getDataStatus() + ":" + isOK);
-            StatusWithMessage st4 = access.deleteAccess("RUNTIME", "RuntimeVishu");
-            System.out.println((st4.getDataStatus() == StatusWithMessage.DataStat.OK) ? "mv1 Acess Deleted" : st4.getErrorMessage());
-            StatusWithMessage st7 = access.deleteAccess("RUTIME", "RUNtimeVishu");
-            System.out.println((st7.getDataStatus() == StatusWithMessage.DataStat.OK) ? "RUNtimeVishu Acess Deleted" : st7.getErrorMessage());
-//            access.deleteAccess("RUNTIME", "RuntimeVishu");
-            StatusWithMessage st3 = access.getAndSaveNewAccess("RUNTIME", "For Access as Runtime");
-            System.out.println((st3.getDataStatus() == StatusWithMessage.DataStat.OK) ? "new password is ok" : st3.getErrorMessage());
-            StatusWithMessage st5 = access.getAndCheckPassword("RUNTIME", "Access as RUNTIME");
-            System.out.println((st5.getDataStatus() == StatusWithMessage.DataStat.OK) ? "password is ok" : st5.getErrorMessage());
-            StatusWithMessage st6 = access.getAndCheckPassword("RUNTIME", "Access as RUNTIME");
-            System.out.println((st6.getDataStatus() == StatusWithMessage.DataStat.OK) ? "password is ok" : st6.getErrorMessage());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
+//    public static void main(String[] args) {
+//        String path = "j:/mvUtilities/testing/passList.txt";
+//        try {
+//            AccessControlInFile access = new AccessControlInFile(path);
+//            StatusWithMessage st1 = access.addNewAccess("EXPERT1", "vishuExpert", "Expert0001$");
+//            System.out.println("" + st1.getDataStatus() + ":" + st1.getErrorMessage());
+//            boolean isOK = access.checkPassword("EXPERT1", "vishuExpert", "Vis0001$") ;
+//            System.out.println("EXPERT1" + ":vishuExpert" +  ":Vis0001$ " + st1.getDataStatus() + ":" + isOK);
+//            isOK = access.checkPassword("EXPERT1", "vishuExpert", "Expert0001$") ;
+//            System.out.println("EXPERT1" + ":vishuExpert" +  ":Expert0001$: " + st1.getDataStatus() + ":" + isOK);
+//            isOK = access.checkPassword("EXPERT", "vishuNew", "pass001") ;
+//            System.out.println("EXPERT" + ":vishuNew" +  ":pass001: " + st1.getDataStatus() + ":" + isOK);
+//            StatusWithMessage st4 = access.deleteAccess("RUNTIME", "RuntimeVishu");
+//            System.out.println((st4.getDataStatus() == StatusWithMessage.DataStat.OK) ? "mv1 Acess Deleted" : st4.getErrorMessage());
+//            StatusWithMessage st7 = access.deleteAccess("RUTIME", "RUNtimeVishu");
+//            System.out.println((st7.getDataStatus() == StatusWithMessage.DataStat.OK) ? "RUNtimeVishu Acess Deleted" : st7.getErrorMessage());
+////            access.deleteAccess("RUNTIME", "RuntimeVishu");
+//            StatusWithMessage st3 = access.getAndSaveNewAccess("RUNTIME", "For Access as Runtime");
+//            System.out.println((st3.getDataStatus() == StatusWithMessage.DataStat.OK) ? "new password is ok" : st3.getErrorMessage());
+//            StatusWithMessage st5 = access.getAndCheckPassword("RUNTIME", "Access as RUNTIME");
+//            System.out.println((st5.getDataStatus() == StatusWithMessage.DataStat.OK) ? "password is ok" : st5.getErrorMessage());
+//            StatusWithMessage st6 = access.getAndCheckPassword("RUNTIME", "Access as RUNTIME");
+//            System.out.println((st6.getDataStatus() == StatusWithMessage.DataStat.OK) ? "password is ok" : st6.getErrorMessage());
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
 }

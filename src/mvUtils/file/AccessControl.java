@@ -19,7 +19,8 @@ import java.util.Vector;
  * To change this template use File | Settings | File Templates.
  */
 public class AccessControl {
-    public enum PasswordIntensity {LOW, MEDIUM, HIGH};
+    public enum PasswordIntensity {LOW, MEDIUM, HIGH}
+
     PasswordIntensity intensity = PasswordIntensity.HIGH;
     String accessFileCode = "accessData1234567890";
     protected boolean asJNLP = false;
@@ -291,7 +292,6 @@ public class AccessControl {
                     }
                 } catch (IOException e) {
                     retVal.addErrorMessage("IO error in reading access file");
-                    break block;
                 }
             }
         }

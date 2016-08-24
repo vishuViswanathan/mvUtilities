@@ -215,7 +215,7 @@ public class XYArray {
 
     public DoublePoint getDataAt(int i) {
         if (i < arrLen)
-            return (DoublePoint)xyVect.get(i);
+            return xyVect.get(i);
         else
             return null;
     }
@@ -479,17 +479,11 @@ public class XYArray {
 
 
     public boolean isXinRange(double dx) {
-        if (dx >= getXmin() && dx <= getXmax())
-            return true;
-        else
-            return false;
+        return dx >= getXmin() && dx <= getXmax();
     }
 
     public boolean isYinRange(double dy) {
-         if (dy >= getYmin() && dy <= getYmax())
-             return true;
-         else
-             return false;
+        return dy >= getYmin() && dy <= getYmax();
     }
 
     public String toString() {

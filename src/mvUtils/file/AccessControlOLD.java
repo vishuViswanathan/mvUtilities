@@ -162,7 +162,7 @@ public class AccessControlOLD {
                 fileWriter.close();
                 retVal = true;
             } catch (IOException e) {
-                break block;
+                e.printStackTrace();
             }
         }
         return retVal;
@@ -185,7 +185,7 @@ public class AccessControlOLD {
                 fileReader.close();
                 return passList;
             } catch (IOException e) {
-                break block;
+                e.printStackTrace();
             }
         }
         return passList;

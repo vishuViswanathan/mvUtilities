@@ -383,7 +383,7 @@ public class MultiColData extends GraphInfoAdapter {
             JLabel comp = new JLabel((String)value);
             comp.setHorizontalAlignment(alignment);
 */
-            comp.setText((String) value + "    ");
+            comp.setText(value + "    ");
             comp.setPreferredSize(new Dimension(colWidth, 40));
             return comp;
         }

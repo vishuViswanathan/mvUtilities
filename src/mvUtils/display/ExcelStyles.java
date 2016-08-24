@@ -28,8 +28,8 @@ public class ExcelStyles {
     public ExcelStyles(Workbook wb) {
         this.wb = wb;
         dataFormat = wb.createDataFormat();
-        borderLine1 = csNormal.BORDER_THICK;
-        borderLine = csNormal.BORDER_THIN;
+        borderLine1 = CellStyle.BORDER_THICK;
+        borderLine = CellStyle.BORDER_THIN;
         createFonts();
         createSplStyles();
     }
@@ -159,25 +159,25 @@ public class ExcelStyles {
     void createFonts() {
         org.apache.poi.ss.usermodel.Font f = wb.createFont();
         f.setFontHeightInPoints((short) 10);
-        f.setColor((short) Font.COLOR_NORMAL);
+        f.setColor(Font.COLOR_NORMAL);
         f.setBoldweight(Font.BOLDWEIGHT_NORMAL);
         fontNormal = f;
 
         f = wb.createFont();
         f.setFontHeightInPoints((short) 10);
-        f.setColor((short) Font.COLOR_NORMAL);
+        f.setColor(Font.COLOR_NORMAL);
         f.setBoldweight(Font.BOLDWEIGHT_BOLD);
         fontBold10 = f;
 
         f = wb.createFont();
         f.setFontHeightInPoints((short) 11);
-        f.setColor((short) Font.COLOR_NORMAL);
+        f.setColor(Font.COLOR_NORMAL);
         f.setBoldweight(Font.BOLDWEIGHT_BOLD);
         fontBold11 = f;
 
         f = wb.createFont();
         f.setFontHeightInPoints((short) 12);
-        f.setColor((short) Font.COLOR_NORMAL);
+        f.setColor(Font.COLOR_NORMAL);
         f.setBoldweight(Font.BOLDWEIGHT_BOLD);
         fontBold12 = f;
     }

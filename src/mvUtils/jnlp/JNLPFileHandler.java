@@ -1,5 +1,7 @@
 package mvUtils.jnlp;
 
+import mvUtils.display.SimpleDialog;
+
 import javax.jnlp.*;
 import java.io.*;
 
@@ -16,7 +18,8 @@ import java.io.*;
         import javax.jnlp.FileContents;
         import javax.jnlp.ServiceManager;
         import javax.jnlp.UnavailableServiceException;
-        import java.io.*;
+import javax.swing.*;
+import java.io.*;
 
 public class JNLPFileHandler {
 
@@ -79,32 +82,44 @@ public class JNLPFileHandler {
     }
 
     public static boolean saveToFile(String txt, String extension, String defaultFileName) {
-        boolean retVal = false;
-        initialize();
-        try {
-            FileContents fc = fss.saveFileDialog(null, new String[]{extension},
-                    new ByteArrayInputStream(txt.getBytes()), defaultFileName);
-            if (fc != null) {
-                retVal = true;
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace(System.out);
-        }
-        return retVal;
+        return saveToFile(txt.getBytes(), extension, defaultFileName);
     }
 
     public static boolean saveToFile(byte[] bytes, String extension, String defaultFileName) {
         boolean retVal = false;
         initialize();
-        try {
-            FileContents fc = fss.saveFileDialog(null, new String[]{extension},
-                    new ByteArrayInputStream(bytes), defaultFileName);
-            if (fc != null) {
-                retVal = true;
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace(System.out);
+        String requiredExt = null;
+        if (extension != null && extension.length() > 0) {
+            requiredExt = "." + extension;
+            SimpleDialog.showMessage("File Name extension", "Choose file name with extension '" + requiredExt + "'." +
+                "\nIf file extension is different, there could be problem while reading the file.");
         }
+        boolean retry;
+        do {
+            retry = false;
+            try {
+                FileContents fc = fss.saveFileDialog(null, new String[]{extension},
+                        new ByteArrayInputStream(bytes), defaultFileName);
+                if (fc != null) {
+                    retVal = true;
+                    String fileName = fc.getName();
+                    if (requiredExt != null) {
+                        if (!fileName.endsWith(requiredExt)) {
+                            if (SimpleDialog.decide(null, "File extension",
+                                    "You have saved to a file with different extension than '" + requiredExt + "'." +
+                                            "\nThis could have problem while opening for reading!" +
+                                            "\n    Do you want to RETRY saving to proper file?") == JOptionPane.YES_OPTION) {
+                                retVal = false;
+                                retry = true;
+                            }
+                        }
+                    }
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace(System.out);
+                break;
+            }
+        } while (retry);
         return retVal;
     }
 

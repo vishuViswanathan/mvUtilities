@@ -44,6 +44,7 @@ public class OneParameterDialog extends JDialog {
         this.control = control;
         if (control != null)
             parent = control.parent();
+        setLocationRelativeTo(parent);
         this.title = title;
         okButt = new JButton(okName);
         cancel = new JButton(cancelName);

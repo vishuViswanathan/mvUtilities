@@ -19,30 +19,100 @@ import java.util.Vector;
  * To change this template use File | Settings | File Templates.
  */
 public class AccessControl {
+    public enum PasswordIntensity {LOW, MEDIUM, HIGH};
+    PasswordIntensity intensity = PasswordIntensity.HIGH;
     String accessFileCode = "accessData1234567890";
     protected boolean asJNLP = false;
     Vector<String[]> passList;
     int maxFileLength = 100000;
     String newLine = "\r\n";
     String separator = " ";
-    String regx = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])[^\\s]{" + 6 + ",}$";
-    String passwordToolTip = "<html>Password must of min " + 6 + " characters length<p>with at least one each of <p>" +
-            "a number <p>" +
-            "one upper case Letter <p>one lower case letter <p>and one of @ # $ % & ";
+    String splChars = "@#$%^&";
+    String regx;
+    String regxHigh = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[" + splChars + "])[^\\s]{" + 6 + ",}$";
+    String regxMedium = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[" + splChars + "])[^\\s]{" + 6 + ",}$";
+    String regxLow = "[a-zA-Z]{1}[a-zA-Z" + splChars + "]{5,}";
+    String passwordToolTip;
+//    String passwordToolTip = "<html>Password must of min " + 6 + " characters length<p>with at least one each of <p>" +
+//            "a number <p>" +
+//            "one upper case Letter <p>one lower case letter <p>and one of @ # $ % & ";
+//    String passwordToolTip = "<html>Password must of min " + 6 + " characters length<p>with at least one each of <p>" +
+//            "a number <p>" +
+//            "one upper case Letter <p>one lower case letter <p>and one of @ # $ % & ";
+//    String passwordToolTip = "<html>Password must of min " + 6 + " characters length<p>with at least one each of <p>" +
+//            "a number <p>" +
+//            "one upper case Letter <p>one lower case letter <p>and one of @ # $ % & ";
     protected String filePath;
     String suggestedExtension;
     String suggestedFileName;
 
-    public AccessControl() {
+    public AccessControl(PasswordIntensity intensity)  {
+        this.intensity = intensity;
         passList = new Vector<>();
     }
 
-    public AccessControl(String passwordRegx, String passwordToolTip) {
-        this();
+    public AccessControl() {
+        this(PasswordIntensity.HIGH);
+    }
+
+    public AccessControl(PasswordIntensity intensity, String passwordRegx, String passwordToolTip) {
+        this(intensity);
         if (passwordRegx != null) {
             this.regx = passwordRegx;
             this.passwordToolTip = passwordToolTip;
         }
+    }
+
+    public AccessControl(String passwordRegx, String passwordToolTip) {
+        this(PasswordIntensity.HIGH, passwordRegx, passwordToolTip);
+    }
+
+    String getRegx() {
+        String retVal = regx;
+        if (retVal == null) {
+            switch(intensity) {
+                case LOW:
+                    retVal = regxLow;
+                    break;
+                case MEDIUM:
+                    retVal = regxMedium;
+                    break;
+                default:
+                    retVal = regxHigh;
+                    break;
+            }
+        }
+        return retVal;
+    }
+
+    String getPasswordToolTip() {
+        String retVal = passwordToolTip;
+        if (retVal == null) {
+            switch (intensity) {
+                case LOW:
+                    retVal = "<html>Password must of min " + 6 + " characters length<p>" +
+                            "Starting with an alphabet followed by with any combination of <p>" +
+                            "<blockQuote>alphabets in lower or upper case </blockQuote><p>" +
+                            "<blockQuote>numbers</blockQuote><p>" +
+                            "<blockQuote>and any of special characters from " + splChars + "</blockQuote>";
+                    break;
+                case MEDIUM:
+                    retVal = "<html>Password must of min " + 6 + " characters length<p>with at least one each of <p>" +
+                            "<blockQuote>one upper case Letter <blockQuote><p>" +
+                            "<blockQuote>one lower case letter </blockQuote><p>" +
+                            "<blockQuote>a number </blockQuote><p>" +
+                            "<blockQuote>with or without any of " + splChars + "</blockQuote>";
+                    break;
+                default:
+                    retVal = "<html>Password must of min " + 6 + " characters length<p>with at least one each of <p>" +
+                            "<blockQuote>one upper case Letter </blockQuote><p>" +
+                            "<blockQuote>one lower case letter </blockQuote><p>" +
+                            "<blockQuote>a number </blockQuote><p>" +
+                            "<blockQuote>and one of " + splChars + "</blockQuote>";
+                    break;
+            }
+        }
+        return retVal;
     }
 
     public void setAsJNLP()  {
@@ -60,7 +130,7 @@ public class AccessControl {
     public StatusWithMessage getAndSaveNewAccess(String accessString, String title) {
         StatusWithMessage retVal = new StatusWithMessage();
         PasswordDialog pDlg;
-        pDlg = new PasswordDialog(title, true, regx, passwordToolTip);
+        pDlg = new PasswordDialog(title, true, getRegx(), getPasswordToolTip());
         if (pDlg.allOK) {
             retVal = addNewAccess(accessString, pDlg.getName(), pDlg.getPassword());
         } else
@@ -125,7 +195,7 @@ public class AccessControl {
     public StatusWithMessage getAndCheckPassword(String accessString, String title) {
         StatusWithMessage retVal = new StatusWithMessage();
         PasswordDialog pDlg;
-        pDlg = new PasswordDialog(title, false, regx, passwordToolTip);
+        pDlg = new PasswordDialog(title, false, regx, getPasswordToolTip());
         if (pDlg.allOK) {
             if (!checkPassword(accessString, pDlg.getName(), pDlg.getPassword()))
                 retVal.setErrorMessage("Invalid Name/ Password for this access");

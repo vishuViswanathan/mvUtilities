@@ -10,30 +10,47 @@ import java.awt.*;
  * To change this template use File | Settings | File Templates.
  */
 public class SimpleDialog {
-    static public void showMessage(Component parentComponent, String title, String msg) {
-        JOptionPane op = new JOptionPane(msg, JOptionPane.INFORMATION_MESSAGE);
+    static public void showMessage(Component parentComponent, String title, String msg, boolean bCopyable) {
+        JOptionPane op;
+        if (bCopyable) {
+            JTextField tf = new JTextField(msg);
+            tf.setEditable(false);
+            op = new JOptionPane(tf, JOptionPane.INFORMATION_MESSAGE);
+        }
+        else
+            op = new JOptionPane(msg, JOptionPane.INFORMATION_MESSAGE);
         JDialog dlg = op.createDialog(parentComponent, title);
-//        if (parentComponent != null)
-            dlg.setLocationRelativeTo(parentComponent);
-//        else
-//            dlg.setLocation(50, 50);
+        dlg.setLocationRelativeTo(parentComponent);
         dlg.toFront();
         dlg.setVisible(true);
+    }
+
+    static public void showMessage(String title, String msg, boolean bCopyable) {
+        showMessage(null, title, msg, bCopyable);
+    }
+
+    static public void showMessage(Component parentComponent, String title, String msg) {
+        showMessage(parentComponent, title, msg, false);
+    }
+
+    static public void showMessage(String title, String msg) {
+        showMessage(null, title, msg);
+    }
+
+    static public void showError(String title, String msg) {
+        showError(null, title, msg);
     }
 
     static public void showError(Component parentComponent, String title, String msg) {
         JOptionPane op = new JOptionPane(msg, JOptionPane.ERROR_MESSAGE);
         JDialog dlg = op.createDialog(parentComponent, title);
-//        if (parentComponent != null)
-            dlg.setLocationRelativeTo(parentComponent);
-//        else
-//            dlg.setLocation(50, 50);
+        dlg.setLocationRelativeTo(parentComponent);
         dlg.toFront();
         dlg.setVisible(true);
     }
 
-     static public int decide(Component parentComponent, String title, String msg) {
-        return decide(parentComponent, title, msg,  true);
+    static public int decide(Component parentComponent, String title, String msg) {
+        return decide(parentComponent, title, msg, true);
     }
 
     static public int decide(Component parentComponent, String title, String msg, boolean defaultOption) {
@@ -48,15 +65,18 @@ public class SimpleDialog {
         OneParameterDialog dlg = new OneParameterDialog(inputControl, title, "YES", "NO", forTime);
         dlg.setValue(msg);
         Component parentComponent = inputControl.parent();
-        if (parentComponent != null)
-            dlg.setLocationRelativeTo(parentComponent);
-        else
-            dlg.setLocation(50, 50);
+        dlg.setLocationRelativeTo(parentComponent);
         dlg.setVisible(true);
         double resp = dlg.getVal();
         if (resp == JOptionPane.YES_OPTION)
             return true;
         else
             return false;
+    }
+
+    public static void main(String[] args) {
+        SimpleDialog.showMessage(null, "Copyable message", "This is copyable message", true);
+        SimpleDialog.showMessage(null, "Non-copyable message", "This is an NOT copyable message");
+        System.exit(0);
     }
 }

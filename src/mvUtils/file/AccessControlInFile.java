@@ -12,15 +12,24 @@ import java.util.Vector;
  * To change this template use File | Settings | File Templates.
  */
 public class AccessControlInFile extends AccessControl {
+    public AccessControlInFile(PasswordIntensity intensity, String filePath) throws Exception {
+        this(intensity, filePath, false);
+    }
+
     public AccessControlInFile(String filePath) throws Exception {
-        this(filePath, false);
+        this(PasswordIntensity.HIGH, filePath);
+    }
+
+    public AccessControlInFile(PasswordIntensity intensity, String filePath, boolean onlyIfExists) throws Exception {
+        this(intensity, filePath, null, null, onlyIfExists);
     }
 
     public AccessControlInFile(String filePath, boolean onlyIfExists) throws Exception {
-        this(filePath, null, null, onlyIfExists);
+        this(PasswordIntensity.HIGH, filePath, onlyIfExists);
     }
 
-    public AccessControlInFile(String filePath, String passwordRegx, String passwordToolTip, boolean onlyIfExists) throws Exception {
+    public AccessControlInFile(PasswordIntensity intensity, String filePath, String passwordRegx, String passwordToolTip, boolean onlyIfExists) throws Exception {
+        super(intensity);
         this.filePath = filePath;
         if (passwordRegx != null) {
             this.regx = passwordRegx;
@@ -39,6 +48,10 @@ public class AccessControlInFile extends AccessControl {
         } catch (Exception e) {
             throw new Exception("Unable to access Access Control file ");
         }
+    }
+
+    public AccessControlInFile(String filePath, String passwordRegx, String passwordToolTip, boolean onlyIfExists) throws Exception {
+        this(PasswordIntensity.HIGH, filePath, passwordRegx, passwordToolTip, onlyIfExists);
     }
 
     public StatusWithMessage deleteAccess(String accessString, String name) {

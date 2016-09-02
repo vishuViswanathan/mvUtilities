@@ -52,10 +52,10 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
         this.controller = controller;
         if (controller != null)
             parent = controller.parent();
-        setLimits(min, max);
         this.onlyInteger = onlyInteger;
         this.setName(title);
         setFormat(fmtStr);
+        setLimits(min, max);
 //        this.fmtStr = fmtStr;
 //        format = new DecimalFormat(fmtStr);
         DecimalFormatSymbols  dfs = format.getDecimalFormatSymbols();
@@ -67,6 +67,8 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
         setHorizontalAlignment(JTextField.RIGHT);
         setData(val);
         editListeners = new Vector<>();
+        setDisabledTextColor(Color.BLUE);
+
 //        setUndoAndRedo();
     }
 
@@ -163,6 +165,17 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
 //        label.setText(title);
     }
 
+    public void setEnabled(boolean ena) {
+        super.setEnabled(ena);
+        enableToolTip(ena);
+    }
+
+    void enableToolTip(boolean ena) {
+        if (ena)
+            setToolTipText(errMsg);
+        else
+            setToolTipText(null);
+    }
 
     public void setEditable(boolean bEdit) {
         super.setEditable(bEdit);
@@ -171,7 +184,8 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
             setToolTipText(errMsg);
         else {
             setToolTipText(null);
-        }   setDisabledTextColor(Color.MAGENTA);
+        }
+//        setDisabledTextColor(Color.MAGENTA);
     }
 
     public JLabel getLabel() {

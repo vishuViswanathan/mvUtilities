@@ -23,7 +23,7 @@ public class XLTextField extends JTextField implements XLcellData {
     }
 
     void setDefaultDisabledColor() {
-        setDisabledTextColor(Color.MAGENTA);
+        setDisabledTextColor(Color.BLUE);
     }
 
     public ValueForExcel getValueForExcel() {

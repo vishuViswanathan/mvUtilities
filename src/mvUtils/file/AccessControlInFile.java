@@ -3,7 +3,6 @@ package mvUtils.file;
 import mvUtils.display.StatusWithMessage;
 
 import java.io.*;
-import java.util.Vector;
 
 /**
  * User: M Viswanathan
@@ -40,7 +39,8 @@ public class AccessControlInFile extends AccessControl {
             if (!file.exists()) {
                 if (onlyIfExists)
                     throw new Exception("Unable to locate Access Control file");
-                file.createNewFile();
+                if (!file.createNewFile())
+                    throw new Exception("Some problem in creating New File for Access Control");
             } else {
                 if (!file.canWrite())
                     throw new Exception("Unable to access Access Control file ");
@@ -81,7 +81,7 @@ public class AccessControlInFile extends AccessControl {
 
     public boolean checkPassword(String accessString, String name, String password) {
         boolean retVal = false;
-        if (readPasswordFile().getDataStatus() == StatusWithMessage.DataStat.OK);
+        if (readPasswordFile().getDataStatus() == StatusWithMessage.DataStat.OK)
             retVal = super.checkPassword(accessString, name, password);
         return retVal;
     }

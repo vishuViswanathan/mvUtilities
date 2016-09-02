@@ -22,17 +22,17 @@ public class AccessControl {
     public enum PasswordIntensity {LOW, MEDIUM, HIGH}
 
     PasswordIntensity intensity = PasswordIntensity.HIGH;
-    String accessFileCode = "accessData1234567890";
+    final String accessFileCode = "accessData1234567890";
     protected boolean asJNLP = false;
     Vector<String[]> passList;
-    int maxFileLength = 100000;
-    String newLine = "\r\n";
-    String separator = " ";
-    String splChars = "@#$%^&";
+    final int maxFileLength = 100000;
+    final String newLine = "\r\n";
+    final String separator = " ";
+    final String splChars = "@#$%^&";
     String regx;
-    String regxHigh = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[" + splChars + "])[^\\s]{" + 6 + ",}$";
-    String regxMedium = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[" + splChars + "])[^\\s]{" + 6 + ",}$";
-    String regxLow = "[a-zA-Z]{1}[a-zA-Z" + splChars + "]{5,}";
+    final String regxHigh = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[" + splChars + "])[^\\s]{" + 6 + ",}$";
+    final String regxMedium = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[" + splChars + "])[^\\s]{" + 6 + ",}$";
+    final String regxLow = "[a-zA-Z]{1}[a-zA-Z0-9" + splChars + "]{5,}";
     String passwordToolTip;
 //    String passwordToolTip = "<html>Password must of min " + 6 + " characters length<p>with at least one each of <p>" +
 //            "a number <p>" +
@@ -68,7 +68,7 @@ public class AccessControl {
         this(PasswordIntensity.HIGH, passwordRegx, passwordToolTip);
     }
 
-    String getRegx() {
+    String getActiveRegx() {
         String retVal = regx;
         if (retVal == null) {
             switch(intensity) {
@@ -86,7 +86,7 @@ public class AccessControl {
         return retVal;
     }
 
-    String getPasswordToolTip() {
+    String getActivePasswordToolTip() {
         String retVal = passwordToolTip;
         if (retVal == null) {
             switch (intensity) {
@@ -124,14 +124,14 @@ public class AccessControl {
         this.filePath = filePath;
     }
 
-    public void setsuggestedExtension(String suggestedExtension) {
+    public void setSuggestedExtension(String suggestedExtension) {
         this.suggestedExtension = suggestedExtension;
     }
 
     public StatusWithMessage getAndSaveNewAccess(String accessString, String title) {
         StatusWithMessage retVal = new StatusWithMessage();
         PasswordDialog pDlg;
-        pDlg = new PasswordDialog(title, true, getRegx(), getPasswordToolTip());
+        pDlg = new PasswordDialog(title, true, getActiveRegx(), getActivePasswordToolTip());
         if (pDlg.allOK) {
             retVal = addNewAccess(accessString, pDlg.getName(), pDlg.getPassword());
         } else
@@ -196,7 +196,7 @@ public class AccessControl {
     public StatusWithMessage getAndCheckPassword(String accessString, String title) {
         StatusWithMessage retVal = new StatusWithMessage();
         PasswordDialog pDlg;
-        pDlg = new PasswordDialog(title, false, regx, getPasswordToolTip());
+        pDlg = new PasswordDialog(title, false,  getActiveRegx(), getActivePasswordToolTip());
         if (pDlg.allOK) {
             if (!checkPassword(accessString, pDlg.getName(), pDlg.getPassword()))
                 retVal.setErrorMessage("Invalid Name/ Password for this access");
@@ -237,8 +237,8 @@ public class AccessControl {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             byte[] bytes = md.digest(stringToHash.getBytes());
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < bytes.length; i++) {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            for (byte aByte : bytes) {
+                sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
             }
             hash = sb.toString();
         } catch (NoSuchAlgorithmException e) {
@@ -278,21 +278,18 @@ public class AccessControl {
             }
         }
         else {
-            block:
-            {
-                try {
-                    File f = new File(filePath);
-                    long len = f.length();
-                    if ((len >= accessFileCode.length()) && (len < maxFileLength)) {
-                        FileReader fileReader = new FileReader(f);
-                        char[] buff = new char[(int)len];
-                        fileReader.read(buff);
-                        retVal = takeDataFromString(new String(buff));
-                        fileReader.close();
-                    }
-                } catch (IOException e) {
-                    retVal.addErrorMessage("IO error in reading access file");
+            try {
+                File f = new File(filePath);
+                long len = f.length();
+                if ((len >= accessFileCode.length()) && (len < maxFileLength)) {
+                    FileReader fileReader = new FileReader(f);
+                    char[] buff = new char[(int)len];
+                    fileReader.read(buff);
+                    retVal = takeDataFromString(new String(buff));
+                    fileReader.close();
                 }
+            } catch (IOException e) {
+                retVal.addErrorMessage("IO error in reading access file");
             }
         }
         return retVal;
@@ -325,7 +322,7 @@ public class AccessControl {
     String dataAsString() {
         StringBuilder retVal = new StringBuilder(accessFileCode + newLine);
         for (String[] oneSet: passList)
-            retVal.append((oneDataLine(oneSet) + newLine ));
+            retVal.append(oneDataLine(oneSet)).append(newLine);
         return retVal.toString();
     }
 
@@ -348,6 +345,13 @@ public class AccessControl {
         else
             retVal.addErrorMessage("Not an accessData File");
         return retVal;
+    }
+
+    static public void main(String[] arg) {
+        AccessControl ac = new AccessControl(PasswordIntensity.LOW);
+        String pass = "Vis0001$";
+        ac.getAndSaveNewAccess("Test", "test Access");
+
     }
 
 }

@@ -110,10 +110,8 @@ public class FileChooserWithOptions extends JFileChooser {
         DataWithMsg retVal = new DataWithMsg();
         File folder = new File(dirPath);
         String basePath = folder.getAbsolutePath();
-        File[] files = folder.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.endsWith("." + extension);
-            }
+        File[] files = folder.listFiles((dir, name) -> {
+            return name.endsWith("." + extension);
         });
         if (files.length < 1) {
             retVal.setErrorMsg("Unable to locate any file with extension " + extension + "!");

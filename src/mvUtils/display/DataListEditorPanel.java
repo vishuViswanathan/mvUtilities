@@ -163,6 +163,7 @@ public class DataListEditorPanel extends FramedPanel {
             save.setEnabled(ena);
             reset.setEnabled(ena);
             edit.setEnabled(!ena);
+            reset.requestFocusInWindow();
         }
     }
 

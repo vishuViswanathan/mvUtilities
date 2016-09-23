@@ -1,5 +1,7 @@
 package mvUtils.display;
 
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
@@ -149,6 +151,35 @@ public class MultiPairColPanel extends FramedPanel {
         addItemPair(name, val, format, false);
     }
 
+    public void addItemPair(Component ntf, boolean bold) {
+        Component compLeft =  getItemName(ntf.getName(), bold);
+        Component compRight = ntf;
+        addItemPair(compLeft, compRight);
+    }
+
+    public void addItemPair(Component ntf) {
+        addItemPair(ntf, false);
+    }
+
+    public void addItemPair(Component ntf, boolean bAllowEdit, boolean bold) {
+        Component compLeft =  getItemName(ntf.getName(), bold);
+        Component compRight = ntf;
+        if (compRight instanceof JTextComponent)
+            ((JTextComponent) compRight).setEditable(bAllowEdit);
+        addItemPair(compLeft, compRight);
+    }
+
+    public void addBlank() {
+        gbcL.insets = insetLBlank;
+        JPanel p1 = new JPanel();
+        addItemPair(p1, p1);
+        gbcL.insets = insetL;
+    }
+
+    public void addItem(String str) {
+        addItem(getItemName(str, false));
+    }
+
     public void addItem(Component comp) {
         if (box == null) {
             lastRow++;
@@ -257,14 +288,6 @@ public class MultiPairColPanel extends FramedPanel {
         }
     }
 
-    public void setEnabledOLD(boolean bEna) {
-        for (Component c: getComponents())
-            c.setEnabled(bEna);
-        for (JPanel p: groupBoxes)
-            for (Component c: p.getComponents())
-                c.setEnabled(bEna);
-    }
-
     public void setEnabled(boolean bEna) {
         super.setEnabled(bEna);
         for (JPanel p: groupBoxes)
@@ -288,28 +311,4 @@ public class MultiPairColPanel extends FramedPanel {
             return null;
     }
 
-    public void addItemPair(Component ntf, boolean bold) {
-        Component compLeft =  getItemName(ntf.getName(), bold);
-        Component compRight = ntf;
-        addItemPair(compLeft, compRight);
-    }
-
-    public void addItemPair(Component ntf) {
-        addItemPair(ntf, false);
-    }
-
-    public void addItemPair(Component ntf, boolean bAllowEdit, boolean bold) {
-        Component compLeft =  getItemName(ntf.getName(), bold);
-        Component compRight = ntf;
-        if (compRight instanceof JTextComponent)
-            ((JTextComponent) compRight).setEditable(bAllowEdit);
-        addItemPair(compLeft, compRight);
-    }
-
-    public void addBlank() {
-        gbcL.insets = insetLBlank;
-        JPanel p1 = new JPanel();
-        addItemPair(p1, p1);
-        gbcL.insets = insetL;
-    }
 }

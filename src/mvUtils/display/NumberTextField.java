@@ -179,6 +179,10 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
 
     public void setEditable(boolean bEdit) {
         super.setEditable(bEdit);
+        if (bEdit)
+            setForeground(Color.black);
+        else
+            setForeground(Color.blue);
         setBackground(Color.white);
         if (bEdit)
             setToolTipText(errMsg);
@@ -285,6 +289,16 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
     }
 
     double oldVal = Double.NEGATIVE_INFINITY;
+
+    public void addActionAndFocusListener(ActionAndFocusListener afl) {
+        addActionListener(afl);
+        addFocusListener(afl);
+    }
+
+    public void removeActionAndFocusListener(ActionAndFocusListener afl) {
+        removeActionListener(afl);
+        removeFocusListener(afl);
+    }
 
     public void focusGained(FocusEvent fe) {
         oldVal = getData();

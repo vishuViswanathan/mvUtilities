@@ -83,7 +83,9 @@ public class DataListEditorPanel extends FramedPanel {
             save.setEnabled(false);
             bP.add(save);
         }
-        bP.add(exit);
+        JPanel exitP = new JPanel();
+        exitP.add(exit);
+        bP.add(exitP);
         return bP;
     }
 
@@ -145,6 +147,10 @@ public class DataListEditorPanel extends FramedPanel {
 
     public void addItemPair(Component ntf, boolean bAllowEdit, boolean bold) {
         mp.addItemPair(ntf, bAllowEdit, bold);
+    }
+
+    public void addItem(String text) {
+        mp.addItem(text);
     }
 
     public void addBlank() {

@@ -8,6 +8,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.Vector;
 
 /**
@@ -27,14 +28,15 @@ public class MultiColData extends GraphInfoAdapter {
     String xFormat = "";
     String xName = "";
     String[] colNames = new String[MAXCOLS];
-    Hashtable<Integer, VariableDataTrace> colData;
+//    Hashtable<Integer, VariableDataTrace> colData;
+    LinkedHashMap<Integer, VariableDataTrace> colData;
     DoubleRange xRange;
     DoubleRange yRange;
     int colWidth = 0;
 
     public MultiColData(String xName, double[] xVals, String xFormat, int colWidth) {
         this.xName = xName;
-        colData = new Hashtable<Integer, VariableDataTrace>();
+        colData = new LinkedHashMap<>();
         takeXvalues(xVals);
         this.xFormat = xFormat;
         this.colWidth = colWidth;

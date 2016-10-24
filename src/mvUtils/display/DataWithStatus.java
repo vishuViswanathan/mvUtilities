@@ -6,34 +6,64 @@ package mvUtils.display;
  * Time: 12:04 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DataWithStatus<T> {
+public class DataWithStatus<T> extends StatusWithMessage{
     private T value;
-    DataStat.Status status = DataStat.Status.OK;
+    DataStat.Status dataStat = DataStat.Status.OK;
     public boolean valid = false;
     public String errorMessage = "";
     public String infoMessage = "";
 
+    public DataWithStatus() {
+        setValue(null);
+    }
+
+    public DataWithStatus (T value) {
+        setValue(value);
+    }
+
     public void setValue(T value) {
         this.value = value;
         valid = (value != null);
-        if (valid) status = DataStat.Status.OK;
+        if (valid)
+            dataStat = DataStat.Status.OK;
+        else
+            setErrorMessage("Data is null");
+    }
+
+    @Override
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public void setErrorMsg(String msg) {
         errorMessage = msg;
-        status = DataStat.Status.WithErrorMsg;
+        dataStat = DataStat.Status.WithErrorMsg;
         valid = false;
+    }
+
+    public void setInfoMsg(String msg) {
+        infoMessage  = msg;
+        dataStat = DataStat.Status.WithInfoMsg;
+        valid = (value != null);
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public String getInfoMessage() {
+        return infoMessage;
     }
 
     public void setValue(T value, String infoMsg) {
         infoMessage = infoMsg;
         this.value = value;
-        status = DataStat.Status.WithInfoMsg;
+        dataStat = DataStat.Status.WithInfoMsg;
         valid = (value != null);
     }
 
     public DataStat.Status getStatus() {
-        return status;
+        return dataStat;
     }
 
     public T getValue() {
@@ -51,5 +81,8 @@ public class DataWithStatus<T> {
         doubleDat.setValue(45.55);
         if (stringDat.valid)
             System.out.println("the data = " + doubleDat.getValue() );
+        DataWithStatus<Double> doubleValDat = new DataWithStatus<>(76.33);
+        System.out.println("" + doubleValDat.valid);
+        System.out.println("the data = " + doubleValDat.getValue() );
     }
 }

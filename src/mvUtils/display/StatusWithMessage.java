@@ -8,9 +8,9 @@ package mvUtils.display;
  * To change this template use File | Settings | File Templates.
  */
 public class StatusWithMessage {
-    public enum DataStat1 {OK, WithInfoMsg, WithErrorMsg}
-    public enum DataStat {OK, WithInfoMsg, WithErrorMsg}
-    protected DataStat dataStat = DataStat.OK;
+//    public enum DataStat1 {OK, WithInfoMsg, WithErrorMsg}
+//    public enum DataStat {OK, WithInfoMsg, WithErrorMsg}
+    protected DataStat.Status dataStat = DataStat.Status.OK;
     String msgSeparator;
     String errMsg = "";
     String infoMsg = "";
@@ -23,7 +23,7 @@ public class StatusWithMessage {
         this.msgSeparator = msgSeparator;
     }
 
-    public DataStat getDataStatus() {
+    public DataStat.Status getDataStatus() {
         return dataStat;
     }
     public String getErrorMessage() {
@@ -45,7 +45,7 @@ public class StatusWithMessage {
 
     public void addErrorMessage(String msg) {
         errMsg = addMsg (errMsg, msg);
-        dataStat = DataStat.WithErrorMsg;
+        dataStat = DataStat.Status.WithErrorMsg;
     }
 
     public boolean setInfoMessage(String msg) {
@@ -53,9 +53,9 @@ public class StatusWithMessage {
     }
 
     public boolean addInfoMessage(String msg) {
-        if (dataStat != DataStat.WithErrorMsg) {
+        if (dataStat != DataStat.Status.WithErrorMsg) {
             infoMsg = addMsg(infoMsg, msg);
-            dataStat = DataStat.WithInfoMsg;
+            dataStat = DataStat.Status.WithInfoMsg;
             return true;
         }
         else

@@ -1,6 +1,6 @@
 package mvUtils.math;
 
-import mvUtils.display.DataWithMsg;
+import mvUtils.display.DataWithStatus;
 
 import javax.swing.*;
 import java.text.DecimalFormat;
@@ -286,8 +286,8 @@ public class XYArray {
          return retVal;
     }
 
-    public DataWithMsg getXatYwithStatus(double dy) {
-        DataWithMsg retVal = new DataWithMsg();
+    public DataWithStatus<Double> getXatYwithStatus(double dy) {
+        DataWithStatus<Double> retVal = new DataWithStatus<>();
         setDoublePoints();
         checkDirection(); // was checkYdirection();
         if (yConfused) {
@@ -295,9 +295,9 @@ public class XYArray {
         }
         else {
             if (yAscending)
-                retVal.setData(getXatYasc(dy));
+                retVal.setValue(getXatYasc(dy));
             else
-                retVal.setData(getXatYdsc(dy));
+                retVal.setValue(getXatYdsc(dy));
         }
         return retVal;
     }

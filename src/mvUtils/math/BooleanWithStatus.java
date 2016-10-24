@@ -1,5 +1,6 @@
 package mvUtils.math;
 
+import mvUtils.display.DataStat;
 import mvUtils.display.StatusWithMessage;
 
 /**
@@ -18,7 +19,7 @@ public class BooleanWithStatus extends StatusWithMessage {
 
     public void setValue(boolean value) {
         this.data = value;
-        dataStat = StatusWithMessage.DataStat.OK;
+        dataStat = DataStat.Status.OK;
     }
 
     public void setValue(boolean value, String infoMsg) {

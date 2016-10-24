@@ -1,5 +1,6 @@
 package mvUtils.jnlp;
 
+import mvUtils.display.DataWithStatus;
 import mvUtils.display.SimpleDialog;
 
 import javax.jnlp.*;
@@ -79,6 +80,56 @@ public class JNLPFileHandler {
 
     public static String readFile(FileContents fc) throws IOException {
         return readFile(fc, 0);    // read all
+    }
+
+    public static DataWithStatus<String> saveToFile(String txt, String extension, String defaultFileName, String message) {
+        return saveToFile(txt.getBytes(), extension, defaultFileName, message);
+    }
+
+    public static DataWithStatus<String> saveToFile(byte[] bytes, String extension, String defaultFileName, String message) {
+        DataWithStatus<String> retVal = new DataWithStatus<>();
+        initialize();
+        String requiredExt = null;
+        if (extension != null && extension.length() > 0)
+            requiredExt = "." + extension;
+        if (message != null && message.length() > 0)
+            SimpleDialog.showMessage("Saving File", message);
+        boolean retry;
+        boolean done = false;
+        FileContents fc = null;
+        do {
+            retry = false;
+            try {
+                fc = fss.saveFileDialog(null, new String[]{extension},
+                        new ByteArrayInputStream(bytes), defaultFileName);
+                if (fc != null) {
+                    done = true;
+                    String fileName = fc.getName();
+                    if (requiredExt != null) {
+                        if (!fileName.endsWith(requiredExt)) {
+                            if (SimpleDialog.decide(null, "File extension",
+                                    "You have saved to a file with different extension than '" + requiredExt + "'." +
+                                            "\nThis could have problem while opening for reading!" +
+                                            "\n    Do you want to RETRY saving to proper file?") == JOptionPane.YES_OPTION) {
+                                done = false;
+                                retry = true;
+                            }
+                        }
+                    }
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace(System.out);
+                break;
+            }
+        } while (retry);
+        if (done && fc != null)
+            try {
+                retVal.setValue(fc.getName());
+            } catch (IOException e) {
+                retVal.setErrorMessage("Unable to get the saved-file name!");
+            }
+        return retVal;
+
     }
 
     public static boolean saveToFile(String txt, String extension, String defaultFileName) {

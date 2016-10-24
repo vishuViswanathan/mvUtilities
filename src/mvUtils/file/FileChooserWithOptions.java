@@ -1,6 +1,6 @@
 package mvUtils.file;
 
-import mvUtils.display.DataWithMsg;
+import mvUtils.display.DataWithStatus;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -106,8 +106,8 @@ public class FileChooserWithOptions extends JFileChooser {
      *                     of more files
      * @return   The stringValue of the retVal has the file path
      */
-    public static DataWithMsg getOneExistingFilepath(String dirPath, final String extension, boolean onlyOneFile) {
-        DataWithMsg retVal = new DataWithMsg();
+    public static DataWithStatus<String> getOneExistingFilepath(String dirPath, final String extension, boolean onlyOneFile) {
+        DataWithStatus<String> retVal = new DataWithStatus<>();
         File folder = new File(dirPath);
         String basePath = folder.getAbsolutePath();
         File[] files = folder.listFiles((dir, name) -> {
@@ -117,7 +117,7 @@ public class FileChooserWithOptions extends JFileChooser {
             retVal.setErrorMsg("Unable to locate any file with extension " + extension + "!");
         }
         else {
-            retVal.setData(files[0].getAbsolutePath());
+            retVal.setValue(files[0].getAbsolutePath());
             if (files.length > 1) {
                 String msg = "There are more than one file with extension " + extension;
                 if (onlyOneFile)

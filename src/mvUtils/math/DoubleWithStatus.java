@@ -1,5 +1,6 @@
 package mvUtils.math;
 
+import mvUtils.display.DataStat;
 import mvUtils.display.StatusWithMessage;
 
 /**
@@ -18,7 +19,7 @@ public class DoubleWithStatus extends StatusWithMessage {
 
     public void setValue(double value) {
         this.data = value;
-        dataStat = DataStat.OK;
+        dataStat = DataStat.Status.OK;
     }
 
     public void setValue(double value, String infoMsg) {

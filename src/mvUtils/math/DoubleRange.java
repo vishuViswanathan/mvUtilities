@@ -39,6 +39,21 @@ public class DoubleRange implements Serializable{
         mid = (max + min) / 2;
     }
 
+    /**
+     *
+     * @param theRange
+     * @param accuracy  a factor of the the range
+     * @return
+     */
+    public boolean isThisYourSubset(DoubleRange theRange, double accuracy) {
+        return isThisYourSubset(theRange.min, theRange.max, accuracy);
+    }
+
+    public boolean isThisYourSubset(double thisMin, double thisMax, double accuracy) {
+        double tolerance = (thisMax - thisMin) * accuracy;
+        return (thisMin >= (min - tolerance)) && (thisMax <= (max + tolerance));
+    }
+
     public DoubleRange copyTo(DoubleRange copyTo) {
         copyTo.min = min;
         copyTo.max = max;
@@ -61,6 +76,11 @@ public class DoubleRange implements Serializable{
 
     public void shift(double shiftBy) {
         setMinMax(min + shiftBy, max+ shiftBy);
+    }
+
+    public DoubleRange multiply(double by) {
+       setMinMax(min * by, max * by);
+        return this;
     }
 
     public void scaleDouble(double factor) {

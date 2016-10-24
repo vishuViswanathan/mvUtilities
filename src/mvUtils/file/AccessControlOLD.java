@@ -1,5 +1,6 @@
 package mvUtils.file;
 
+import mvUtils.display.DataStat;
 import mvUtils.display.StatusWithMessage;
 import mvUtils.display.StatusWithMessage;
 
@@ -224,16 +225,16 @@ public class AccessControlOLD {
             isOK = access.checkPassword("EXPERT", "vishuNew", "pass001") ;
             System.out.println("EXPERT" + ":vishuNew" +  ":pass001: " + st1.getDataStatus() + ":" + isOK);
             StatusWithMessage st4 = access.deleteAccess("RUTIME", "mv1");
-            System.out.println((st4.getDataStatus() == StatusWithMessage.DataStat.OK) ? "mv1 Acess Deleted" : st4.getErrorMessage());
+            System.out.println((st4.getDataStatus() == DataStat.Status.OK) ? "mv1 Acess Deleted" : st4.getErrorMessage());
             StatusWithMessage st7 = access.deleteAccess("RUTIME", "RUNtimeVishu");
-            System.out.println((st7.getDataStatus() == StatusWithMessage.DataStat.OK) ? "RUNtimeVishu Acess Deleted" : st7.getErrorMessage());
+            System.out.println((st7.getDataStatus() == DataStat.Status.OK) ? "RUNtimeVishu Acess Deleted" : st7.getErrorMessage());
 //            access.deleteAccess("RUNTIME", "RuntimeVishu");
             StatusWithMessage st3 = access.getAndSaveNewAccess("RUNTIME", "For Access as Runtime");
-            System.out.println((st3.getDataStatus() == StatusWithMessage.DataStat.OK) ? "new password is ok" : st3.getErrorMessage());
+            System.out.println((st3.getDataStatus() == DataStat.Status.OK) ? "new password is ok" : st3.getErrorMessage());
             StatusWithMessage st5 = access.getAndCheckPassword("RUNTIME", "Access as RUNTIME");
-            System.out.println((st5.getDataStatus() == StatusWithMessage.DataStat.OK) ? "password is ok" : st5.getErrorMessage());
+            System.out.println((st5.getDataStatus() == DataStat.Status.OK) ? "password is ok" : st5.getErrorMessage());
             StatusWithMessage st6 = access.getAndCheckPassword("RUNTIME", "Access as RUNTIME");
-            System.out.println((st6.getDataStatus() == StatusWithMessage.DataStat.OK) ? "password is ok" : st6.getErrorMessage());
+            System.out.println((st6.getDataStatus() == DataStat.Status.OK) ? "password is ok" : st6.getErrorMessage());
 
         } catch (Exception e) {
             e.printStackTrace();

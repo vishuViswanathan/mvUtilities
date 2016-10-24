@@ -1,5 +1,6 @@
 package mvUtils.file;
 
+import mvUtils.display.DataStat;
 import mvUtils.display.StatusWithMessage;
 
 import java.io.*;
@@ -56,9 +57,9 @@ public class AccessControlInFile extends AccessControl {
 
     public StatusWithMessage deleteAccess(String accessString, String name) {
         StatusWithMessage retVal = readPasswordFile();
-        if (retVal.getDataStatus() == StatusWithMessage.DataStat.OK) {
+        if (retVal.getDataStatus() == DataStat.Status.OK) {
             retVal = super.deleteAccess(accessString, name);
-            if (retVal.getDataStatus() == StatusWithMessage.DataStat.OK)
+            if (retVal.getDataStatus() == DataStat.Status.OK)
                 retVal = saveToPasswordFile();
         }
         return retVal;
@@ -66,13 +67,13 @@ public class AccessControlInFile extends AccessControl {
 
     public StatusWithMessage addNewAccess(String accessString, String name, String password) {
         StatusWithMessage retVal = readPasswordFile();
-        if (retVal.getDataStatus() != StatusWithMessage.DataStat.WithErrorMsg) {
+        if (retVal.getDataStatus() != DataStat.Status.WithErrorMsg) {
             StatusWithMessage addNewResponse = super.addNewAccess(accessString, name, password);
-            if (addNewResponse.getDataStatus() == StatusWithMessage.DataStat.WithErrorMsg )
+            if (addNewResponse.getDataStatus() == DataStat.Status.WithErrorMsg )
                 retVal.addErrorMessage(addNewResponse.getErrorMessage());
             else {
                 StatusWithMessage saveResponse = saveToPasswordFile();
-                if (saveResponse.getDataStatus() == StatusWithMessage.DataStat.WithErrorMsg)
+                if (saveResponse.getDataStatus() == DataStat.Status.WithErrorMsg)
                     retVal.addErrorMessage(saveResponse.getErrorMessage());
             }
         }
@@ -81,14 +82,14 @@ public class AccessControlInFile extends AccessControl {
 
     public boolean checkPassword(String accessString, String name, String password) {
         boolean retVal = false;
-        if (readPasswordFile().getDataStatus() == StatusWithMessage.DataStat.OK)
+        if (readPasswordFile().getDataStatus() == DataStat.Status.OK)
             retVal = super.checkPassword(accessString, name, password);
         return retVal;
     }
 
     protected StatusWithMessage saveToPassList(String nameHash, String passwordHash) {
         StatusWithMessage retVal = super.saveToPassList(nameHash, passwordHash);
-        if (retVal.getDataStatus() == StatusWithMessage.DataStat.OK)
+        if (retVal.getDataStatus() == DataStat.Status.OK)
             retVal = saveToPasswordFile();
         return retVal;
     }
@@ -106,16 +107,16 @@ public class AccessControlInFile extends AccessControl {
 //            isOK = access.checkPassword("EXPERT", "vishuNew", "pass001") ;
 //            System.out.println("EXPERT" + ":vishuNew" +  ":pass001: " + st1.getDataStatus() + ":" + isOK);
 //            StatusWithMessage st4 = access.deleteAccess("RUNTIME", "RuntimeVishu");
-//            System.out.println((st4.getDataStatus() == StatusWithMessage.DataStat.OK) ? "mv1 Acess Deleted" : st4.getErrorMessage());
+//            System.out.println((st4.getDataStatus() == DataStat.Status.OK) ? "mv1 Acess Deleted" : st4.getErrorMessage());
 //            StatusWithMessage st7 = access.deleteAccess("RUTIME", "RUNtimeVishu");
-//            System.out.println((st7.getDataStatus() == StatusWithMessage.DataStat.OK) ? "RUNtimeVishu Acess Deleted" : st7.getErrorMessage());
+//            System.out.println((st7.getDataStatus() == DataStat.Status.OK) ? "RUNtimeVishu Acess Deleted" : st7.getErrorMessage());
 ////            access.deleteAccess("RUNTIME", "RuntimeVishu");
 //            StatusWithMessage st3 = access.getAndSaveNewAccess("RUNTIME", "For Access as Runtime");
-//            System.out.println((st3.getDataStatus() == StatusWithMessage.DataStat.OK) ? "new password is ok" : st3.getErrorMessage());
+//            System.out.println((st3.getDataStatus() == DataStat.Status.OK) ? "new password is ok" : st3.getErrorMessage());
 //            StatusWithMessage st5 = access.getAndCheckPassword("RUNTIME", "Access as RUNTIME");
-//            System.out.println((st5.getDataStatus() == StatusWithMessage.DataStat.OK) ? "password is ok" : st5.getErrorMessage());
+//            System.out.println((st5.getDataStatus() == DataStat.Status.OK) ? "password is ok" : st5.getErrorMessage());
 //            StatusWithMessage st6 = access.getAndCheckPassword("RUNTIME", "Access as RUNTIME");
-//            System.out.println((st6.getDataStatus() == StatusWithMessage.DataStat.OK) ? "password is ok" : st6.getErrorMessage());
+//            System.out.println((st6.getDataStatus() == DataStat.Status.OK) ? "password is ok" : st6.getErrorMessage());
 //
 //        } catch (Exception e) {
 //            e.printStackTrace();

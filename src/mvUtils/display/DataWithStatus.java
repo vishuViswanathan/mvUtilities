@@ -8,7 +8,7 @@ package mvUtils.display;
  */
 public class DataWithStatus<T> extends StatusWithMessage{
     private T value;
-    DataStat.Status dataStat = DataStat.Status.OK;
+//    DataStat.Status dataStat = DataStat.Status.OK;
     public boolean valid = false;
     public String errorMessage = "";
     public String infoMessage = "";

@@ -42,16 +42,24 @@ public class DoubleRange implements Serializable{
     /**
      *
      * @param theRange
-     * @param accuracy  a factor of the the range
+     * @param outRange  a factor of max and min of called object
      * @return
      */
-    public boolean isThisYourSubset(DoubleRange theRange, double accuracy) {
-        return isThisYourSubset(theRange.min, theRange.max, accuracy);
+    public boolean isThisYourSubset(DoubleRange theRange, double outRange) {
+        return isThisYourSubset(theRange.min, theRange.max, outRange);
     }
 
-    public boolean isThisYourSubset(double thisMin, double thisMax, double accuracy) {
-        double tolerance = (thisMax - thisMin) * accuracy;
-        return (thisMin >= (min - tolerance)) && (thisMax <= (max + tolerance));
+    /**
+     *
+     * @param thisMin
+     * @param thisMax
+     * @param outRange  allowance factor applied on both min and max of the called object
+     * @return
+     */
+    public boolean isThisYourSubset(double thisMin, double thisMax, double outRange) {
+        double toleranceOnMax = Math.abs(max * outRange);
+        double toleranceOnMin = Math.abs(min * outRange);
+        return (thisMin >= (min - toleranceOnMin)) && (thisMax <= (max + toleranceOnMax));
     }
 
     public DoubleRange copyTo(DoubleRange copyTo) {

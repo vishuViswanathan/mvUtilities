@@ -40,7 +40,8 @@ public class StatusWithMessage {
     }
 
     public void setErrorMessage(String msg) {
-        addErrorMessage(msg);
+        errMsg = msg;
+        dataStat = DataStat.Status.WithErrorMsg;
     }
 
     public void addErrorMessage(String msg) {
@@ -49,7 +50,13 @@ public class StatusWithMessage {
     }
 
     public boolean setInfoMessage(String msg) {
-        return addInfoMessage(msg);
+        if (dataStat != DataStat.Status.WithErrorMsg) {
+            infoMsg = msg;
+            dataStat = DataStat.Status.WithInfoMsg;
+            return true;
+        }
+        else
+            return false;
     }
 
     public boolean addInfoMessage(String msg) {

@@ -117,8 +117,16 @@ public class DataListEditorPanel extends FramedPanel {
         mp.addItemPair(name, val, format, bold);
     }
 
+    public void addItemPair(String textLeft, String textRight, boolean bBold, int horizontalPos) {
+        mp.addItemPair(textLeft, textRight, bBold, horizontalPos);
+    }
+
     public void addItemPair(String name, double val, String format) {
         mp.addItemPair(name, val, format);
+    }
+
+    public void addItem(String text, boolean bBold, int horizontalPos) {
+        mp.addItem(text, bBold, horizontalPos);
     }
 
     public void addItem(Component comp) {
@@ -159,6 +167,10 @@ public class DataListEditorPanel extends FramedPanel {
 
     public void addGroup() {
         mp.addGroup();
+    }
+
+    public void closeGroup() {
+        mp.closeGroup();
     }
 
     void setEditable(boolean ena) {

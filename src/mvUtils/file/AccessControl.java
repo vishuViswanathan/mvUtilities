@@ -196,7 +196,7 @@ public class AccessControl {
     public StatusWithMessage getAndCheckPassword(String accessString, String title) {
         StatusWithMessage retVal = new StatusWithMessage();
         PasswordDialog pDlg;
-        pDlg = new PasswordDialog(title, false,  getActiveRegx(), getActivePasswordToolTip());
+        pDlg = new PasswordDialog(title, false,  null, null); //  getActiveRegx(), getActivePasswordToolTip());
         if (pDlg.allOK) {
             if (!checkPassword(accessString, pDlg.getName(), pDlg.getPassword()))
                 retVal.setErrorMessage("Invalid Name/ Password for this access");

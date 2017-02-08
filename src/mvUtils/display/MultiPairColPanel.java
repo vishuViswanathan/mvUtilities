@@ -1,6 +1,7 @@
 package mvUtils.display;
 
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import sun.misc.JavaLangAccess;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
@@ -86,12 +87,18 @@ public class MultiPairColPanel extends FramedPanel {
         groupBoxes.add(box);
     }
 
+    public void closeGroup() {
+        box = null;
+    }
+
     public void removeAll() {
         super.removeAll();
         if (title.length()  > 0)
             setTitle(title);
         groupBoxes.removeAllElements();
     }
+
+    JLabel titleLabel = null;  // handled separately when panel is disabled
 
     public void setTitle(String title) {
         GridBagConstraints gbc = new GridBagConstraints();
@@ -101,6 +108,7 @@ public class MultiPairColPanel extends FramedPanel {
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridwidth = colPairs * 2;
         JLabel tL  = new JLabel(title);
+        titleLabel = tL;
         Font f = tL.getFont();
         tL.setFont(f.deriveFont(Font.BOLD));
         add(tL, gbc);
@@ -180,6 +188,11 @@ public class MultiPairColPanel extends FramedPanel {
         addItem(getItemName(str, false));
     }
 
+    public void addItem(String text, boolean bBold, int horizontalPos) {
+        Component c =  getItemName(text, bBold);
+        addItem(c, horizontalPos);
+    }
+
     public void addItem(Component comp) {
         if (box == null) {
             lastRow++;
@@ -202,7 +215,31 @@ public class MultiPairColPanel extends FramedPanel {
             box.add(comp, gbcBoxLR);
             rowCount++;
         }
+    }
 
+    public void addItem(Component comp, int horizontalPos) {
+        if (box == null) {
+            lastRow++;
+            gbcLR.gridx = 0;
+            gbcLR.gridy = lastRow;
+            gbcLR.gridwidth = 2;
+            gbcLR.anchor =  horizontalPos;
+            add(comp, gbcLR);
+            gbcL.gridy = lastRow;
+            gbcR.gridy = lastRow;
+            rowCount++;
+        }
+        else {
+            gbcBoxL.gridx = 0;
+            gbcBoxL.gridy++;
+            gbcBoxR.gridy++;
+            gbcBoxLR.gridx = 0;
+            gbcBoxLR.gridwidth = 2;
+            gbcBoxLR.anchor =  horizontalPos;
+            gbcBoxLR.gridy = gbcBoxL.gridy;
+            box.add(comp, gbcBoxLR);
+            rowCount++;
+        }
     }
 
     public int getRowCount() {
@@ -292,6 +329,8 @@ public class MultiPairColPanel extends FramedPanel {
         super.setEnabled(bEna);
         for (JPanel p: groupBoxes)
             enableComponents(p, bEna);
+        if (titleLabel != null)
+            titleLabel.setEnabled(true);
     }
 
 

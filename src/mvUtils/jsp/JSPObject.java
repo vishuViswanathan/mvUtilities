@@ -9,4 +9,5 @@ package mvUtils.jsp;
 public interface JSPObject {
     boolean isDataCollected();
     boolean collectData(JSPConnection jspConnection);
+    void unCollectData();
 }

@@ -26,11 +26,12 @@ public class PasswordDialog extends JDialog {
     static int minNameLength = 3;
     int minPasswordLength = 6;
     boolean newUser = false;
-//    String regx = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.@#$%&])[^\\s]{" + minLength + ",}$";
-    String regx = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])[^\\s]{" + minPasswordLength + ",}$";
-    String passwordToolTip = "<html>Password must of min " + minPasswordLength + " characters length<p>with at least one each of <p>" +
+    String defaultRegx = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])[^\\s]{" + minPasswordLength + ",}$";
+    String regx;
+    String defaultPasswordToolTip = "<html>Password must of min " + minPasswordLength + " characters length<p>with at least one each of <p>" +
             "a number <p>" +
-        "one upper case Letter <p>one lower case letter <p>and one of @ # $ % & ";
+            "one upper case Letter <p>one lower case letter <p>and one of @ # $ % & ";
+    String passwordToolTip;
 
     public PasswordDialog(String title) {
         this(title, false);
@@ -45,10 +46,18 @@ public class PasswordDialog extends JDialog {
         this.newUser = newUser;
         setTitle(title);
         setModal(true);
-        if (regx != null) {
-            this.regx = regx;
-            this.passwordToolTip = passwordToolTip;
+        if (newUser) {
+            if (regx != null) {
+                this.regx = regx;
+                this.passwordToolTip = passwordToolTip;
+            }
+            else {
+                this.regx = defaultRegx;
+                this.passwordToolTip = defaultPasswordToolTip;
+            }
         }
+        else
+            this.passwordToolTip = null;
         init();
     }
 

@@ -135,10 +135,7 @@ public class NumberTextFieldTable extends JTable implements ActionListener {
         }
 
         public boolean isCellEditable(int row, int col) {
-            if (col > 0 || !freezeLeftCol)
-                return true;
-            else
-                return false;
+            return col > 0 || !freezeLeftCol;
         }
     }
 
@@ -204,7 +201,7 @@ public class NumberTextFieldTable extends JTable implements ActionListener {
                         rowstring = st1.nextToken();
                         StringTokenizer st2 = new StringTokenizer(rowstring, "\t");
                         for (int j = 0; st2.hasMoreTokens(); j++) {
-                            value = (String) st2.nextToken();
+                            value = st2.nextToken();
                             if (startRow + i < getRowCount() &&
                                     startCol + j < getColumnCount())
                                 setValueAt(value, startRow + i, startCol + j);

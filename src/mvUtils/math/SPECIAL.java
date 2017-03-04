@@ -8,7 +8,7 @@ package mvUtils.math;
  * To change this template use File | Settings | File Templates.
  */
 public class SPECIAL {
-    public static double lmtd(double deltaTa, double deltaTb) {
+    public static double lmtdOLD(double deltaTa, double deltaTb) {
         double lmtd;
         double denominator = deltaTa / deltaTb;
         if (denominator <= 0) {
@@ -21,6 +21,17 @@ public class SPECIAL {
                 lmtd = (deltaTa + deltaTb) / 2;
             }
         }
+        return lmtd;
+    }
+
+    public static double lmtd(double deltaTa, double deltaTb) {
+        double lmtd;
+        double denominator = deltaTa / deltaTb;
+        double numerator = deltaTa - deltaTb;
+        if (numerator == 0)
+            lmtd = (deltaTa + deltaTb) / 2;
+        else
+            lmtd = (deltaTa - deltaTb) / Math.log(deltaTa / deltaTb);
         return lmtd;
     }
 

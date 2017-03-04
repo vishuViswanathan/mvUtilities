@@ -1,6 +1,7 @@
 package mvUtils.math;
+import mvUtils.display.StatusWithMessage;
 
-import java.io.Serializable;
+import java.io.*;
 
 public class DoubleRange implements Serializable{
 	public static final int ITISOUTOFRANGE = 0;
@@ -38,6 +39,29 @@ public class DoubleRange implements Serializable{
         mid = (max + min) / 2;
     }
 
+    /**
+     *
+     * @param theRange
+     * @param outRange  a factor of max and min of called object
+     * @return
+     */
+    public boolean isThisYourSubset(DoubleRange theRange, double outRange) {
+        return isThisYourSubset(theRange.min, theRange.max, outRange);
+    }
+
+    /**
+     *
+     * @param thisMin
+     * @param thisMax
+     * @param outRange  allowance factor applied on both min and max of the called object
+     * @return
+     */
+    public boolean isThisYourSubset(double thisMin, double thisMax, double outRange) {
+        double toleranceOnMax = Math.abs(max * outRange);
+        double toleranceOnMin = Math.abs(min * outRange);
+        return (thisMin >= (min - toleranceOnMin)) && (thisMax <= (max + toleranceOnMax));
+    }
+
     public DoubleRange copyTo(DoubleRange copyTo) {
         copyTo.min = min;
         copyTo.max = max;
@@ -60,6 +84,11 @@ public class DoubleRange implements Serializable{
 
     public void shift(double shiftBy) {
         setMinMax(min + shiftBy, max+ shiftBy);
+    }
+
+    public DoubleRange multiply(double by) {
+       setMinMax(min * by, max * by);
+        return this;
     }
 
     public void scaleDouble(double factor) {
@@ -100,7 +129,16 @@ public class DoubleRange implements Serializable{
 		return (val >= min && val <= max);
 	}
 
-	public double range() {
+    public StatusWithMessage checkAStatus(double value) {
+        StatusWithMessage status = new StatusWithMessage();
+        if (value > max)
+            status.setErrorMessage("More than the allowed " + max);
+        else if (value < min)
+            status.setErrorMessage("Less than the allowed " + min);
+        return status;
+    }
+
+	double range() {
 		return (max - min);
 	}
 

@@ -8,6 +8,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.Vector;
 
 /**
@@ -19,7 +20,7 @@ import java.util.Vector;
  * Multi columns with same X values
  */
 public class MultiColData extends GraphInfoAdapter {
-    int MAXCOLS = 10;
+    int MAXCOLS = 15;
     int cols = 0;
     int rows;
     double[] xVals;
@@ -27,14 +28,15 @@ public class MultiColData extends GraphInfoAdapter {
     String xFormat = "";
     String xName = "";
     String[] colNames = new String[MAXCOLS];
-    Hashtable<Integer, VariableDataTrace> colData;
+//    Hashtable<Integer, VariableDataTrace> colData;
+    LinkedHashMap<Integer, VariableDataTrace> colData;
     DoubleRange xRange;
     DoubleRange yRange;
     int colWidth = 0;
 
     public MultiColData(String xName, double[] xVals, String xFormat, int colWidth) {
         this.xName = xName;
-        colData = new Hashtable<Integer, VariableDataTrace>();
+        colData = new LinkedHashMap<>();
         takeXvalues(xVals);
         this.xFormat = xFormat;
         this.colWidth = colWidth;
@@ -72,6 +74,21 @@ public class MultiColData extends GraphInfoAdapter {
             return cols;
         } else
             return -1;
+    }
+
+    public int addColumn(VariableDataTrace vdt) {
+        if (cols < MAXCOLS) {
+            colNames[cols] = vdt.yName();
+            colData.put(cols, vdt);
+            cols++;
+            return cols;
+        }
+        else
+            return -1;
+    }
+
+    public int rows() {
+        return rows;
     }
 
     public int addColumn(String colName, String yFormat) {
@@ -151,13 +168,26 @@ public class MultiColData extends GraphInfoAdapter {
         return dataArr;
     }
 
-    public int addTraces(TrendsPanel tp, int count) {
+    public int addTracesOLD(TrendsPanel tp, int count) {
         int nowCount = 0;
         VariableDataTrace vdt;
         for (int t = 0;t < colData.size(); t++)   {
             vdt = colData.get(t);
             if (vdt.isTraceable())
                 tp.addTrace(this, nowCount++, vdt.color);
+        }
+        return count + nowCount;
+    }
+
+    public int addTraces(TrendsPanel tp, int count) {
+        int nowCount = 0;
+        VariableDataTrace vdt;
+        for (int t = 0;t < colData.size(); t++)   {
+            vdt = colData.get(t);
+            if (vdt.isTraceable()) {
+                tp.addTrace(this, t, vdt.color);
+                nowCount++;
+            }
         }
         return count + nowCount;
     }
@@ -355,7 +385,7 @@ public class MultiColData extends GraphInfoAdapter {
             JLabel comp = new JLabel((String)value);
             comp.setHorizontalAlignment(alignment);
 */
-            comp.setText((String) value + "    ");
+            comp.setText(value + "    ");
             comp.setPreferredSize(new Dimension(colWidth, 40));
             return comp;
         }

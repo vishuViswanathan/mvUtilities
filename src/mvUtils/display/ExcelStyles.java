@@ -28,8 +28,8 @@ public class ExcelStyles {
     public ExcelStyles(Workbook wb) {
         this.wb = wb;
         dataFormat = wb.createDataFormat();
-        borderLine1 = csNormal.BORDER_THICK;
-        borderLine = csNormal.BORDER_THIN;
+        borderLine1 = CellStyle.BORDER_THICK;
+        borderLine = CellStyle.BORDER_THIN;
         createFonts();
         createSplStyles();
     }
@@ -159,25 +159,25 @@ public class ExcelStyles {
     void createFonts() {
         org.apache.poi.ss.usermodel.Font f = wb.createFont();
         f.setFontHeightInPoints((short) 10);
-        f.setColor((short) Font.COLOR_NORMAL);
+        f.setColor(Font.COLOR_NORMAL);
         f.setBoldweight(Font.BOLDWEIGHT_NORMAL);
         fontNormal = f;
 
         f = wb.createFont();
         f.setFontHeightInPoints((short) 10);
-        f.setColor((short) Font.COLOR_NORMAL);
+        f.setColor(Font.COLOR_NORMAL);
         f.setBoldweight(Font.BOLDWEIGHT_BOLD);
         fontBold10 = f;
 
         f = wb.createFont();
         f.setFontHeightInPoints((short) 11);
-        f.setColor((short) Font.COLOR_NORMAL);
+        f.setColor(Font.COLOR_NORMAL);
         f.setBoldweight(Font.BOLDWEIGHT_BOLD);
         fontBold11 = f;
 
         f = wb.createFont();
         f.setFontHeightInPoints((short) 12);
-        f.setColor((short) Font.COLOR_NORMAL);
+        f.setColor(Font.COLOR_NORMAL);
         f.setBoldweight(Font.BOLDWEIGHT_BOLD);
         fontBold12 = f;
     }
@@ -393,7 +393,7 @@ public class ExcelStyles {
     }
 
 
-    boolean xlAddItemPair(Sheet sheet, int row, int col, ComponentPair pair) {
+    boolean xlAddItemPairOLD(Sheet sheet, int row, int col, ComponentPair pair) {
         boolean retVal = false;
         Component compL, compR;
         compL = pair.getComponent(true);
@@ -432,6 +432,54 @@ public class ExcelStyles {
 
 //        createCell(r, (short)col, CellStyle.ALIGN_LEFT, csNormal).setCellValue(name);
 //        createCell(r, (short)(col + 1), CellStyle.ALIGN_RIGHT, csNormal).setCellValue(value);
+    }
+
+    boolean xlAddItemPair(Sheet sheet, int row, int col, ComponentPair pair) {
+        boolean retVal = false;
+        Component compL, compR;
+        compL = pair.getComponent(true);
+        compR = pair.getComponent(false);
+        Row r = sheet.getRow(row);
+        Cell c;
+        r = (r == null) ? sheet.createRow(row) : r;
+        c = r.createCell(col);
+        if (compR != null) {
+            if (compL instanceof XLcellData)
+                setCellValue(c, ((XLcellData) compL).getValueForExcel());
+            else {
+                c.setCellValue(pair.compString(true));
+                if (pair.isBold(true))
+                    c.setCellStyle(csNormalBold);
+            }
+            c = r.createCell(col + 1);
+            if (compR instanceof XLcellData)
+                setCellValue(c, ((XLcellData) compR).getValueForExcel());
+            else if (compR instanceof AbstractButton) {
+                c.setCellValue(((AbstractButton) compR).isSelected() ? "Yes" : "No");
+            } else {
+                String value = pair.compString(false);
+                double d = isNumeric(value);
+                if (Double.isNaN(d))
+                    c.setCellValue(value);
+                else
+                    c.setCellValue(d);
+                if (pair.isBold(false))
+                    c.setCellStyle(csNormalBold);
+            }
+            retVal = true;
+        }
+        else {
+            if (compL != null)  {
+                if (compL instanceof XLcellData) {
+                    setCellValue(c, ((XLcellData) compL).getValueForExcel());
+                    r.createCell(col + 1);
+                    CellRangeAddress range = new CellRangeAddress(row, row, col, col + 1);
+                    sheet.addMergedRegion(range);
+                }
+            }
+            retVal = true;
+        }
+        return retVal;
     }
 
     public int xlAddXLCellData(Sheet sheet, int row, int col, Vector<XLcellData> data) {

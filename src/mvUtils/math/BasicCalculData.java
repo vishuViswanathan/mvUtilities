@@ -11,8 +11,8 @@ import java.io.Serializable;
  */
  
 public interface BasicCalculData extends Serializable{
-	public abstract String title();
-	public abstract void drawBasePic(Graphics g, Rectangle area,
-																			Point origin);
+	String title();
+	void drawBasePic(Graphics g, Rectangle area,
+					 Point origin);
 	
 }

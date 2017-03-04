@@ -83,7 +83,9 @@ public class DataListEditorPanel extends FramedPanel {
             save.setEnabled(false);
             bP.add(save);
         }
-        bP.add(exit);
+        JPanel exitP = new JPanel();
+        exitP.add(exit);
+        bP.add(exitP);
         return bP;
     }
 
@@ -115,8 +117,16 @@ public class DataListEditorPanel extends FramedPanel {
         mp.addItemPair(name, val, format, bold);
     }
 
+    public void addItemPair(String textLeft, String textRight, boolean bBold, int horizontalPos) {
+        mp.addItemPair(textLeft, textRight, bBold, horizontalPos);
+    }
+
     public void addItemPair(String name, double val, String format) {
         mp.addItemPair(name, val, format);
+    }
+
+    public void addItem(String text, boolean bBold, int horizontalPos) {
+        mp.addItem(text, bBold, horizontalPos);
     }
 
     public void addItem(Component comp) {
@@ -147,12 +157,20 @@ public class DataListEditorPanel extends FramedPanel {
         mp.addItemPair(ntf, bAllowEdit, bold);
     }
 
+    public void addItem(String text) {
+        mp.addItem(text);
+    }
+
     public void addBlank() {
         mp.addBlank();
     }
 
     public void addGroup() {
         mp.addGroup();
+    }
+
+    public void closeGroup() {
+        mp.closeGroup();
     }
 
     void setEditable(boolean ena) {
@@ -163,6 +181,7 @@ public class DataListEditorPanel extends FramedPanel {
             save.setEnabled(ena);
             reset.setEnabled(ena);
             edit.setEnabled(!ena);
+            reset.requestFocusInWindow();
         }
     }
 
@@ -177,8 +196,8 @@ public class DataListEditorPanel extends FramedPanel {
                 }
                 else {
                     response = EditResponse.Response.SAVE;
-                    dataHandler.saveData();
-                    setEditable(false);
+                    if (dataHandler.saveData())
+                        setEditable(false);
                 }
             }
             else if (src == exit) {

@@ -21,6 +21,6 @@ public class PosAndValue {
     }
 
     public String toString() {
-        return formatter.format(val);
+        return SetNumberFormat.format(val);
     }
 }

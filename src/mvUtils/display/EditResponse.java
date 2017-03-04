@@ -8,7 +8,7 @@ package mvUtils.display;
  * To change this template use File | Settings | File Templates.
  */
 public interface EditResponse {
-    static public enum Response {
+    enum Response {
         SAVE("Save"),
         EXIT("Exit"),
         DELETE("Delete"),

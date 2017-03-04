@@ -8,43 +8,43 @@ import java.io.Serializable;
 
 public interface GraphInfo
         extends Serializable {
-    public abstract TraceHeader[] getTraceHeader();
+    TraceHeader[] getTraceHeader();
 
-    public abstract TraceHeader getTraceHeader(int trace);
+    TraceHeader getTraceHeader(int trace);
 
-    public abstract DoubleRange getXrange(int trace);
+    DoubleRange getXrange(int trace);
 
-    public abstract DoubleRange getYrange(int trace);
+    DoubleRange getYrange(int trace);
 
-    public abstract DoubleRange getCommonXrange();
+    DoubleRange getCommonXrange();
 
-    public abstract DoubleRange getCommonYrange();
+    DoubleRange getCommonYrange();
 
-    public abstract DoubleRange getXrange(int trace, DoubleRange xRange);
+    DoubleRange getXrange(int trace, DoubleRange xRange);
 
-    public abstract double getYat(int trace, double x);
+    double getYat(int trace, double x);
 
-    public abstract DoublePoint[] getGraph(int trace);
+    DoublePoint[] getGraph(int trace);
 
-    public abstract DoubleRange[] getGraph(int trace, double step);
+    DoubleRange[] getGraph(int trace, double step);
 
-    public abstract DoubleRange[] getGraph(int trace, DoubleRange xRange);
+    DoubleRange[] getGraph(int trace, DoubleRange xRange);
 
-    public abstract DoubleRange[] getGraph(int trace,
-                                           DoubleRange xRange, double step);
+    DoubleRange[] getGraph(int trace,
+                           DoubleRange xRange, double step);
 
-    public abstract DoublePoint[] getReactions();
+    DoublePoint[] getReactions();
 
-    public abstract String[] getTabularResults(int trace);
+    String[] getTabularResults(int trace);
 
-    public abstract int traceCount();
+    int traceCount();
 
-    public abstract JTable getResultTable();
+    JTable getResultTable();
 
-    public String getYFormat(int trace);
+    String getYFormat(int trace);
 
-    public String getXFormat();
+    String getXFormat();
 
-    public String getXFormat(int trace);
+    String getXFormat(int trace);
 
 }

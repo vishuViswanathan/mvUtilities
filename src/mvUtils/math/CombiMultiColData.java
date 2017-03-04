@@ -12,6 +12,7 @@ import mvUtils.display.*;
 public class CombiMultiColData extends GraphInfoAdapter {
     MultiColData one, two;
     int cols;
+    CombinedGraphInfo combinedGraphInfo;
 
     public CombiMultiColData(MultiColData one, MultiColData two) {
         this.one = one;
@@ -44,39 +45,18 @@ public class CombiMultiColData extends GraphInfoAdapter {
     }
 
     public int addTraces(TrendsPanel tp, int count) {
-        int nowCount = 0;
-        VariableDataTrace vdt;
-        for (int t = 0;t < one.colData.size(); t++)   {
-            vdt = one.colData.get(t);
-            if (vdt.isTraceable())
-                tp.addTrace(this, nowCount++, vdt.color);
-        }
-        for (int t = 0;t < two.colData.size(); t++)   {
-            vdt = two.colData.get(t);
-            if (vdt.isTraceable())
-                tp.addTrace(this, nowCount++, vdt.color, GraphDisplay.LineStyle.DASHED);
-        }
-        return count + nowCount;
+        combinedGraphInfo = new CombinedGraphInfo();
+        return combinedGraphInfo.addTraces(this, tp, count);
     }
-
-
 
     @Override
     public TraceHeader getTraceHeader(int trace) {
-        SrcAndCol src = getSrc(trace);
-        if (src != null) {
-            return src.getTraceHeader();
-        }
-        return null;
+        return combinedGraphInfo.getTraceHeader(trace);
      }
 
     @Override
     public DoublePoint[] getGraph(int trace) {
-        SrcAndCol src = getSrc(trace);
-        if (src != null) {
-            return src.getGraph();
-        }
-        return null;
+        return combinedGraphInfo.getGraph(trace);
     }
 
     @Override
@@ -101,56 +81,53 @@ public class CombiMultiColData extends GraphInfoAdapter {
 
     @Override
     public double getYat(int trace, double x) {
-        SrcAndCol src = getSrc(trace);
-        if (src != null) {
-            return src.getYat(x);
-        }
-        return 0;
+        return combinedGraphInfo.getYat(trace, x);
     }
 
-    SrcAndCol getSrc(int trace) {
-        if (trace >= 0 && trace < cols) {
-            if (trace < one.cols - 1)
-                return new SrcAndCol(one, trace);
-            else {
-                trace++;  // to skip the time column of 'one'
-                return new SrcAndCol(two, trace - one.cols);
+    class CombinedGraphInfo extends GraphInfoAdapter {
+        MultiColData combinedData;
+        int fromOneSize;
+        CombinedGraphInfo() {
+            combinedData = new MultiColData(one.xName, one.xVals, one.xFormat, one.colWidth);
+            for (VariableDataTrace vdt:one.colData.values()) {
+                if (vdt.isTraceable())
+                    combinedData.addColumn(vdt);
+            }
+            fromOneSize = combinedData.getColumns();
+            for (VariableDataTrace vdt:two.colData.values()) {
+                if (vdt.isTraceable())
+                    combinedData.addColumn(vdt);
             }
         }
-        else
-            return null;
-    }
 
-    SrcAndCol getSrcOLD(int trace) {
-        if (trace >= 0 && trace < cols) {
-            if (trace < one.cols)
-                return new SrcAndCol(one, trace);
-            else {
-                return new SrcAndCol(two, trace - one.cols);
+        int addTraces(GraphInfoAdapter grfInfo, TrendsPanel tp, int count){
+            int nowCount = 0;
+            VariableDataTrace vdt;
+            for (int t = 0;t < combinedData.colData.size(); t++)   {
+               vdt = combinedData.colData.get(t);
+                if (t < fromOneSize)
+                    tp.addTrace(grfInfo, t, vdt.color);
+                else
+                    tp.addTrace(grfInfo, t, vdt.color, GraphDisplay.LineStyle.DASHED);
+                nowCount++;
             }
+            return count + nowCount;
         }
-        else
-            return null;
+
+        @Override
+        public double getYat(int trace, double x) {
+            return combinedData.getYat(trace, x);
+        }
+
+        @Override
+        public TraceHeader getTraceHeader(int trace) {
+            return combinedData.getTraceHeader(trace);
+        }
+
+        @Override
+        public DoublePoint[] getGraph(int trace) {
+            return combinedData.getGraph(trace);
+        }
+
     }
-
-    class SrcAndCol {
-        int col;
-        MultiColData src;
-        SrcAndCol(MultiColData src, int col) {
-            this.src = src;
-            this.col = col;
-        }
-
-        DoublePoint[] getGraph() {
-            return src.getGraph(col);
-        }
-
-        TraceHeader getTraceHeader() {
-            return src.getTraceHeader(col);
-        }
-
-        double getYat(double x) {
-            return src.getYat(col, x);
-        }
-     }
-}
+ }

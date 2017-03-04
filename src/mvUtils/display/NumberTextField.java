@@ -3,6 +3,12 @@ package mvUtils.display;
 //import directFiredHeating.DFHeating;
 
 import javax.swing.*;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.text.Document;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +16,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Vector;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,6 +43,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
 //    JLabel label;
     boolean bBold = false;
     char chDec;
+    Vector<EditListener> editListeners;
 
     public NumberTextField(InputControl controller, double val, int size, boolean onlyInteger, double min, double max, String fmtStr,
                            String title) {
@@ -44,11 +52,10 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
         this.controller = controller;
         if (controller != null)
             parent = controller.parent();
-        this.min = min;
-        this.max = max;
         this.onlyInteger = onlyInteger;
         this.setName(title);
         setFormat(fmtStr);
+        setLimits(min, max);
 //        this.fmtStr = fmtStr;
 //        format = new DecimalFormat(fmtStr);
         DecimalFormatSymbols  dfs = format.getDecimalFormatSymbols();
@@ -58,17 +65,85 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
         addFocusListener(this);
         //        getDocument().addDocumentListener(this);
         setHorizontalAlignment(JTextField.RIGHT);
-//        label = new JLabel(title);
         setData(val);
-//        errMsg = "Enter value between " + format.format(min) + " and " + format.format(max);
-        errMsg = "Enter value between " + min + " and " + max;
-        setToolTipText(errMsg);
+        editListeners = new Vector<>();
+        setDisabledTextColor(Color.BLUE);
+
+//        setUndoAndRedo();
     }
 
     public NumberTextField(InputControl controller, double val, int size, boolean onlyInteger, double min, double max, String fmtStr,
                            String title, boolean allowZero) {
         this(controller, val, size, onlyInteger, min, max, fmtStr, title);
         this.allowZero = allowZero;
+    }
+
+    public void addEditListener(EditListener li) {
+        if(!editListeners.contains(li))
+            editListeners.add(li);
+    }
+
+    public void removedEditListener(EditListener li) {
+        if(!editListeners.contains(li))
+            editListeners.remove(li);
+    }
+
+    void setUndoAndRedo() {
+        final UndoManager undo = new UndoManager();
+        Document doc = getDocument();
+
+        // Listen for undo and redo events
+        doc.addUndoableEditListener(new UndoableEditListener() {
+            public void undoableEditHappened(UndoableEditEvent evt) {
+                undo.addEdit(evt.getEdit());
+            }
+        });
+
+        // Create an undo action and add it to the text component
+        getActionMap().put("Undo",
+                new AbstractAction("Undo") {
+                    public void actionPerformed(ActionEvent evt) {
+                        try {
+                            if (undo.canUndo()) {
+                                undo.undo();
+                            }
+                        } catch (CannotUndoException e) {
+                        }
+                    }
+                });
+
+        // Bind the undo action to ctl-Z
+        getInputMap().put(KeyStroke.getKeyStroke("control Z"), "Undo");
+
+        // Create a redo action and add it to the text component
+        getActionMap().put("Redo",
+                new AbstractAction("Redo") {
+                    public void actionPerformed(ActionEvent evt) {
+                        try {
+                            if (undo.canRedo()) {
+                                undo.redo();
+                            }
+                        } catch (CannotRedoException e) {
+                        }
+                    }
+                });
+
+        // Bind the redo action to ctl-Y
+        getInputMap().put(KeyStroke.getKeyStroke("control Y"), "Redo");
+    }
+
+    public void setLimits(double min, double max) {
+        this.min = min;
+        this.max = max;
+        setToolTip();
+    }
+
+    void setToolTip() {
+        if (onlyInteger)
+            errMsg = "Enter an INTEGER Value  between " + (int)min + " and " + (int)max;
+        else
+            errMsg = "Enter Value  between " + min + " and " + max;
+        setToolTipText(errMsg);
     }
 
     public void setNormalBackground(Color color) {
@@ -90,13 +165,31 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
 //        label.setText(title);
     }
 
-    public void setEditable(boolean bEdit) {
-        super.setEditable(bEdit);
-        setBackground(Color.white);
-        if (bEdit)
+    public void setEnabled(boolean ena) {
+        super.setEnabled(ena);
+        enableToolTip(ena);
+    }
+
+    void enableToolTip(boolean ena) {
+        if (ena)
             setToolTipText(errMsg);
         else
             setToolTipText(null);
+    }
+
+    public void setEditable(boolean bEdit) {
+        super.setEditable(bEdit);
+        if (bEdit)
+            setForeground(Color.black);
+        else
+            setForeground(Color.blue);
+        setBackground(Color.white);
+        if (bEdit)
+            setToolTipText(errMsg);
+        else {
+            setToolTipText(null);
+        }
+//        setDisabledTextColor(Color.MAGENTA);
     }
 
     public JLabel getLabel() {
@@ -120,7 +213,6 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
         double val = getData();
         return (val >= min && val <= max);
     }
-
 
     public boolean isInError() {
         inError = false;
@@ -147,7 +239,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
             }
             if (!inError) {
                 if ((allowZero && (val == 0)) || (val >= min && val <= max)) {
-                    setData(val);
+                    setDataNoCheck(val);
                 } else
                     inError = true;
             }
@@ -158,22 +250,24 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
 
     public void setData(double val) {
         notify = false;
-//        if (val == 0 && allowZero)
-//            setText("");
-//        else
+        String txt = format.format(val);
+        setText(txt);
+        isInError();
+        showError();
+        notify = true;
+    }
+
+    void setDataNoCheck(double val) {
         String txt = format.format(val);
         setText(txt);
         showError();
-//        resetError();
         notify = true;
+
     }
 
     public String format(double val) {
         return format.format(val);
     }
-
-
-
 
     public double getData() {
         textWithError = getText();
@@ -196,6 +290,16 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
 
     double oldVal = Double.NEGATIVE_INFINITY;
 
+    public void addActionAndFocusListener(ActionAndFocusListener afl) {
+        addActionListener(afl);
+        addFocusListener(afl);
+    }
+
+    public void removeActionAndFocusListener(ActionAndFocusListener afl) {
+        removeActionListener(afl);
+        removeFocusListener(afl);
+    }
+
     public void focusGained(FocusEvent fe) {
         oldVal = getData();
     }
@@ -206,7 +310,13 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
                 takeNote();
     }
 
+    void informEditListeners() {
+        for (EditListener eL: editListeners)
+            eL.edited();
+    }
+
     public void actionPerformed(ActionEvent te) {
+        informEditListeners();
         if (controller != null)
             if (controller.canNotify())
                 takeNote();
@@ -221,7 +331,6 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
 
     void takeNote() {
         if (isInError()) {
-
             if (controller != null)
                 controller.enableNotify(false);
             JOptionPane.showMessageDialog(null, errMsg + " [" + textWithError + "]", getName(), JOptionPane.ERROR_MESSAGE);

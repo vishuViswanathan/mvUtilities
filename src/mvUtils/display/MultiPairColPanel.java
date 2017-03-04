@@ -1,5 +1,8 @@
 package mvUtils.display;
 
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import sun.misc.JavaLangAccess;
+
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
@@ -84,12 +87,18 @@ public class MultiPairColPanel extends FramedPanel {
         groupBoxes.add(box);
     }
 
+    public void closeGroup() {
+        box = null;
+    }
+
     public void removeAll() {
         super.removeAll();
         if (title.length()  > 0)
             setTitle(title);
         groupBoxes.removeAllElements();
     }
+
+    JLabel titleLabel = null;  // handled separately when panel is disabled
 
     public void setTitle(String title) {
         GridBagConstraints gbc = new GridBagConstraints();
@@ -99,6 +108,7 @@ public class MultiPairColPanel extends FramedPanel {
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridwidth = colPairs * 2;
         JLabel tL  = new JLabel(title);
+        titleLabel = tL;
         Font f = tL.getFont();
         tL.setFont(f.deriveFont(Font.BOLD));
         add(tL, gbc);
@@ -111,6 +121,19 @@ public class MultiPairColPanel extends FramedPanel {
         if (labelWidth > 0)
             lName.setPreferredSize(new Dimension(labelWidth, 20));
         return lName;
+    }
+
+    /**
+     *
+     * @param textLeft
+     * @param textRight
+     * @param bBold
+     * @param horizontalPos  GridBagConstraint.EAST/ WEST/ CENTER
+     */
+    public void addItemPair(String textLeft, String textRight, boolean bBold, int horizontalPos) {
+        Component compLeft =  getItemName(textLeft, bBold);
+        Component compRight =  getItemName(textRight, bBold);
+        addItemPair(compLeft, horizontalPos, compRight, horizontalPos);
     }
 
     public void addItemPair(String name, Component comp, boolean bold) {
@@ -136,6 +159,40 @@ public class MultiPairColPanel extends FramedPanel {
         addItemPair(name, val, format, false);
     }
 
+    public void addItemPair(Component ntf, boolean bold) {
+        Component compLeft =  getItemName(ntf.getName(), bold);
+        Component compRight = ntf;
+        addItemPair(compLeft, compRight);
+    }
+
+    public void addItemPair(Component ntf) {
+        addItemPair(ntf, false);
+    }
+
+    public void addItemPair(Component ntf, boolean bAllowEdit, boolean bold) {
+        Component compLeft =  getItemName(ntf.getName(), bold);
+        Component compRight = ntf;
+        if (compRight instanceof JTextComponent)
+            ((JTextComponent) compRight).setEditable(bAllowEdit);
+        addItemPair(compLeft, compRight);
+    }
+
+    public void addBlank() {
+        gbcL.insets = insetLBlank;
+        JPanel p1 = new JPanel();
+        addItemPair(p1, p1);
+        gbcL.insets = insetL;
+    }
+
+    public void addItem(String str) {
+        addItem(getItemName(str, false));
+    }
+
+    public void addItem(String text, boolean bBold, int horizontalPos) {
+        Component c =  getItemName(text, bBold);
+        addItem(c, horizontalPos);
+    }
+
     public void addItem(Component comp) {
         if (box == null) {
             lastRow++;
@@ -158,7 +215,33 @@ public class MultiPairColPanel extends FramedPanel {
             box.add(comp, gbcBoxLR);
             rowCount++;
         }
+        compPairs.add(new ComponentPair(comp, false, null, false));
+    }
 
+    public void addItem(Component comp, int horizontalPos) {
+        if (box == null) {
+            lastRow++;
+            gbcLR.gridx = 0;
+            gbcLR.gridy = lastRow;
+            gbcLR.gridwidth = 2;
+            gbcLR.anchor =  horizontalPos;
+            add(comp, gbcLR);
+            gbcL.gridy = lastRow;
+            gbcR.gridy = lastRow;
+            rowCount++;
+        }
+        else {
+            gbcBoxL.gridx = 0;
+            gbcBoxL.gridy++;
+            gbcBoxR.gridy++;
+            gbcBoxLR.gridx = 0;
+            gbcBoxLR.gridwidth = 2;
+            gbcBoxLR.anchor =  horizontalPos;
+            gbcBoxLR.gridy = gbcBoxL.gridy;
+            box.add(comp, gbcBoxLR);
+            rowCount++;
+        }
+        compPairs.add(new ComponentPair(comp, false, null, false));
     }
 
     public int getRowCount() {
@@ -167,17 +250,46 @@ public class MultiPairColPanel extends FramedPanel {
 
     public void addItemPair(Component compLeft, Component compRight) {
         addItemPair(compLeft, false, compRight, false);
-/*
-        lastRow++;
-        gbcL.gridx = 0;
-        gbcL.gridy = lastRow;
-        add(compLeft, gbcL);
-        gbcR.gridx = 1;
-        gbcR.gridy = lastRow;
-        add(compRight, gbcR);
-        compPairs.add(new ComponentPair(compLeft, compRight));
-        rowCount++;
-*/
+    }
+
+    /**
+     *
+     * @param compLeft
+     * @param compLeftPos GridBagConstraint.EAST/ WEST/ CENTER
+     * @param compRight
+     * @param compRightPos  GridBagConstraint.EAST/ WEST/ CENTER
+     */
+
+    public void addItemPair(Component compLeft, int compLeftPos, Component compRight, int compRightPos) {
+        if (box == null) {
+            lastRow++;
+            GridBagConstraints gbcLNow = (GridBagConstraints)gbcL.clone();
+            gbcLNow.gridx = 0;
+            gbcLNow.gridy = lastRow;
+            gbcLNow.anchor =  compLeftPos;
+            add(compLeft, gbcLNow);
+            gbcR.gridx = 1;
+            gbcR.gridy = lastRow;
+            GridBagConstraints gbcRNow = (GridBagConstraints)gbcR.clone();
+            gbcRNow.gridx = 1;
+            gbcRNow.gridy = lastRow;
+            gbcRNow.anchor =  compRightPos;
+            add(compRight, gbcRNow);
+            compPairs.add(new ComponentPair(compLeft, false, compRight, false));
+            rowCount++;
+        }
+        else {
+            gbcBoxL.gridy++;
+            GridBagConstraints gbcLNow = (GridBagConstraints)gbcBoxL.clone();
+            gbcLNow.gridx = 0;
+            box.add(compLeft, gbcLNow);
+            gbcBoxR.gridy++;
+            GridBagConstraints gbcRNow = (GridBagConstraints)gbcBoxR.clone();
+            gbcRNow.gridx = 1;
+            box.add(compRight, gbcRNow);
+            compPairs.add(new ComponentPair(compLeft, false, compRight, false));
+            rowCount++;
+        }
     }
 
     public void addItemPair(Component compLeft, boolean bBoldLeft, Component compRight, boolean bBoldRight) {
@@ -205,12 +317,13 @@ public class MultiPairColPanel extends FramedPanel {
     }
 
     public void setEnabled(boolean bEna) {
-        for (Component c: getComponents())
-            c.setEnabled(bEna);
+        super.setEnabled(bEna);
         for (JPanel p: groupBoxes)
-            for (Component c: p.getComponents())
-                c.setEnabled(bEna);
+            enableComponents(p, bEna);
+        if (titleLabel != null)
+            titleLabel.setEnabled(true);
     }
+
 
     String componentString(int row, boolean bLeft) {
         if (row < rowCount) {
@@ -228,28 +341,4 @@ public class MultiPairColPanel extends FramedPanel {
             return null;
     }
 
-    public void addItemPair(Component ntf, boolean bold) {
-        Component compLeft =  getItemName(ntf.getName(), bold);
-        Component compRight = ntf;
-        addItemPair(compLeft, compRight);
-    }
-
-    public void addItemPair(Component ntf) {
-        addItemPair(ntf, false);
-    }
-
-    public void addItemPair(Component ntf, boolean bAllowEdit, boolean bold) {
-        Component compLeft =  getItemName(ntf.getName(), bold);
-        Component compRight = ntf;
-        if (compRight instanceof JTextComponent)
-            ((JTextComponent) compRight).setEditable(bAllowEdit);
-        addItemPair(compLeft, compRight);
-    }
-
-    public void addBlank() {
-        gbcL.insets = insetLBlank;
-        JPanel p1 = new JPanel();
-        addItemPair(p1, p1);
-        gbcL.insets = insetL;
-    }
 }

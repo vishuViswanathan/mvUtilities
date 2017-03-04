@@ -176,7 +176,7 @@ public class TraceBuilder extends GraphInfoAdapter {
 //                        break;
                     StringTokenizer st2 = new StringTokenizer(rowstring, "\t");
                     for (int j = 0; st2.hasMoreTokens(); j++) {
-                        value = (String) st2.nextToken();
+                        value = st2.nextToken();
                         if (i < maxRows && j < maxCols) {
                             oneCell = colData[i][j];
                             oneCell.setData(Double.valueOf(value));

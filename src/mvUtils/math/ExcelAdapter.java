@@ -19,9 +19,7 @@ import java.util.StringTokenizer;
  * To change this template use File | Settings | File Templates.
  */
 public class ExcelAdapter implements ActionListener {
-    private String rowstring, value;
     private Clipboard system;
-    private StringSelection stsel;
     private JTable jTable1;
 
     /**
@@ -87,7 +85,7 @@ public class ExcelAdapter implements ActionListener {
                 }
                 sbf.append("\n");
             }
-            stsel = new StringSelection(sbf.toString());
+            StringSelection stsel = new StringSelection(sbf.toString());
             system = Toolkit.getDefaultToolkit().getSystemClipboard();
             system.setContents(stsel, stsel);
         }
@@ -100,10 +98,10 @@ public class ExcelAdapter implements ActionListener {
                 System.out.println("String is:" + trstring);
                 StringTokenizer st1 = new StringTokenizer(trstring, "\n");
                 for (int i = 0; st1.hasMoreTokens(); i++) {
-                    rowstring = st1.nextToken();
+                    String rowstring = st1.nextToken();
                     StringTokenizer st2 = new StringTokenizer(rowstring, "\t");
                     for (int j = 0; st2.hasMoreTokens(); j++) {
-                        value = (String) st2.nextToken();
+                        String value = st2.nextToken();
                         if (startRow + i < jTable1.getRowCount() &&
                                 startCol + j < jTable1.getColumnCount())
                             jTable1.setValueAt(value, startRow + i, startCol + j);

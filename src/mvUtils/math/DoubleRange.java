@@ -138,7 +138,7 @@ public class DoubleRange implements Serializable{
         return status;
     }
 
-	double range() {
+	public double range() {
 		return (max - min);
 	}
 

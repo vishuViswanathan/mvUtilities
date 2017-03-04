@@ -7,6 +7,10 @@ package mvUtils.display;
  * Time: 4:03 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface CheckDataList {
-    public ErrorStatAndMsg isDataListOK();
+public interface DataHandler {
+    public ErrorStatAndMsg checkData();
+    public boolean saveData();
+    public void deleteData();
+    public void resetData();
+    public void cancel();
 }

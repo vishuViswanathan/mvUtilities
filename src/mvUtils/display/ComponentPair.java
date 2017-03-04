@@ -13,6 +13,7 @@ import java.awt.*;
 public class ComponentPair {
     Component compL, compR;
     boolean bCompLBold, bCompRBold;
+
     public ComponentPair(Component compL, boolean bCompLBold, Component compR, boolean bCompRBold) {
         this.compL = compL;
         this.bCompLBold = bCompLBold;
@@ -22,12 +23,16 @@ public class ComponentPair {
 
     public String compString(boolean bLeft) {
         Component comp = (bLeft) ? compL : compR;
-        if (comp instanceof JLabel)
-            return (((JLabel) comp).getText());
-        else if (comp instanceof JTextField)
-            return (((JTextField)comp).getText());
+        if (comp != null) {
+            if (comp instanceof JLabel)
+                return (((JLabel) comp).getText());
+            else if (comp instanceof JTextField)
+                return (((JTextField) comp).getText());
+            else
+                return "";
+        }
         else
-            return "";
+            return("");
     }
 
     public boolean isBold(boolean bLeft) {

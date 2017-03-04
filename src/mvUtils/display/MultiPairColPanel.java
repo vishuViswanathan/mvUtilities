@@ -215,6 +215,7 @@ public class MultiPairColPanel extends FramedPanel {
             box.add(comp, gbcBoxLR);
             rowCount++;
         }
+        compPairs.add(new ComponentPair(comp, false, null, false));
     }
 
     public void addItem(Component comp, int horizontalPos) {
@@ -240,6 +241,7 @@ public class MultiPairColPanel extends FramedPanel {
             box.add(comp, gbcBoxLR);
             rowCount++;
         }
+        compPairs.add(new ComponentPair(comp, false, null, false));
     }
 
     public int getRowCount() {
@@ -248,17 +250,6 @@ public class MultiPairColPanel extends FramedPanel {
 
     public void addItemPair(Component compLeft, Component compRight) {
         addItemPair(compLeft, false, compRight, false);
-/*
-        lastRow++;
-        gbcL.gridx = 0;
-        gbcL.gridy = lastRow;
-        add(compLeft, gbcL);
-        gbcR.gridx = 1;
-        gbcR.gridy = lastRow;
-        add(compRight, gbcR);
-        compPairs.add(new ComponentPair(compLeft, compRight));
-        rowCount++;
-*/
     }
 
     /**

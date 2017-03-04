@@ -72,8 +72,16 @@ public class SimpleDialog {
     }
 
     public static void main(String[] args) {
-        SimpleDialog.showMessage(null, "Copyable message", "This is copyable message", true);
-        SimpleDialog.showMessage(null, "Non-copyable message", "This is an NOT copyable message");
+        System.out.println("JOptionPane.YES_OPTION = "  + JOptionPane.YES_OPTION +
+                ", JOptionPane.NO_OPTION = "  + JOptionPane.NO_OPTION);
+        int response = decide(null, "test", "Yes or No");
+        System.out.println("response with no defaultOption= " + response);
+        response = decide(null, "test", "Yes or No", false);
+        System.out.println("response with defaultOption as false = " + response);
+        response = decide(null, "test", "Yes or No", true);
+        System.out.println("response with defaultOption as true = " + response);
+//        SimpleDialog.showMessage(null, "Copyable message", "This is copyable message", true);
+//        SimpleDialog.showMessage(null, "Non-copyable message", "This is an NOT copyable message");
         System.exit(0);
     }
 }

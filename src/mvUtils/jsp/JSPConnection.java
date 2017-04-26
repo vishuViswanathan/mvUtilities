@@ -29,10 +29,17 @@ public class JSPConnection {
         try {
             BasicService basicService = (BasicService)
                     ServiceManager.lookup("javax.jnlp.BasicService");
+//            trace("JSPConnection.32: basicService = " + basicService);
             codeBase = basicService.getCodeBase();
+//            trace("JSPConnection.34: codeBase = " + codeBase);
         } catch (UnavailableServiceException e) {
             allOK = false;
+            trace("JSPConnection.34: " + e.getMessage());
         }
+    }
+
+    public JSPConnection(URL codeBase) {
+        this.codeBase = codeBase;
     }
 
     public ErrorStatAndMsg getData(String jspPath, Hashtable<String, String> query) {
@@ -42,6 +49,7 @@ public class JSPConnection {
             UrlWithStatus urlWithStatus = getURL(jspPath, query);
             if (urlWithStatus.ok) {
                 URL url = urlWithStatus.url;
+//                trace("JSPConnection.48: url = " + url);
                 try {
                     BufferedReader reader = new BufferedReader
                             (new InputStreamReader(url.openStream()));
@@ -124,5 +132,9 @@ public class JSPConnection {
             this.ok = false;
             this.msg = msg;
         }
+    }
+
+    void trace(String msg) {
+        System.out.println(msg);
     }
 }

@@ -1,12 +1,5 @@
 package mvUtils.security;
 
-/**
- * User: M Viswanathan
- * Date: 12-Apr-17
- * Time: 2:57 PM
- * To change this template use File | Settings | File Templates.
- */
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.BufferedReader;
@@ -77,12 +70,20 @@ import java.io.InputStreamReader;
             return result.trim();
         }
 
+        public static String userHome() {
+            return System.getProperty("user.home");
+        }
+
+        public static String appDataFolder() {
+            return  System.getenv("APPDATA");
+        }
+
         public static void main(String[] args){
             String cpuId = MiscUtil.getMotherboardSN();
             String sn = MiscUtil.getSerialNumber("C");
-            javax.swing.JOptionPane.showConfirmDialog((java.awt.Component)
-                            null, "cpuId: " + cpuId + "\nsn: " + sn + "\nAppData folder: " + System.getenv("APPDATA"), "machine ID",
+            javax.swing.JOptionPane.showConfirmDialog( null, "cpuId: " + cpuId + "\nsn: " + sn + "\nAppData folder: " + appDataFolder(), "machine ID",
                     javax.swing.JOptionPane.DEFAULT_OPTION);
+            System.out.println("User home:" + userHome());
         }
     }
 

@@ -1,5 +1,10 @@
 package mvUtils.forTesting;
 
+import mvUtils.http.PostToWebSite;
+import mvUtils.security.GCMCipher;
+
+import java.util.HashMap;
+
 /**
  * User: M Viswanathan
  * Date: 06-Jun-16
@@ -12,4 +17,18 @@ public class Test {
         long startTime = System.nanoTime();
         while ((System.nanoTime() - startTime) < sleepTime) {}
     }
+
+    public static void main(String[] args) {
+        PostToWebSite jspReq =  new PostToWebSite("http://localhost:9080/fceCalculations/jsp/");
+        HashMap<String, String> params = new HashMap<>();
+        GCMCipher cipher = new GCMCipher();
+        byte[] keyBytes = {100, 20};
+        String key =  cipher.bytesToByteString(keyBytes);
+        params.put("user", cipher.encryptStringWithKey("viswanathanm", key));
+        params.put("appCode", "101");
+        params.put("key", cipher.bytesToByteString(cipher.encrypt(keyBytes)));
+        String response = jspReq.getByPOSTRequest("getAccessCode.jsp", params, 2000);
+        System.out.println(response);
+    }
 }
+

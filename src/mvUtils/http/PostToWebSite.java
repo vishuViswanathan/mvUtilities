@@ -45,25 +45,18 @@ public class PostToWebSite {
             HttpEntity entity = response.getEntity();
 
             if (entity != null) {
-//                InputStream instream = entity.getContent();
-//                try {
-//                    byte[] data = new byte[maxResponseLength + 1]; // maximum expected
-//                    int len = instream.read(data);
-//                    if (len > 0)
-//                        retVal = new String(data);
-//                } finally {
-//                    instream.close();
-//                }
+                // The try-with-resources Statement (InputStream isi AutoClosable and closed automatically
+                // on completion of try() statement
                 try(InputStream instream = entity.getContent()) {
                     byte[] data = new byte[maxResponseLength + 1]; // maximum expected
                     int len = instream.read(data);
                     if (len > 0)
                         retVal = new String(data);
-
                 }
             }
         } catch (IOException e) {
-            retVal = XMLmv.putTag("Status", "ERROR: " + e.getMessage());
+            retVal = XMLmv.putTag("Status", "ERROR") +
+                    XMLmv.putTag("msg", e.getMessage());
 //            retVal =  e.getMessage();
         }
         return retVal;

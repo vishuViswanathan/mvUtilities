@@ -78,6 +78,10 @@ import java.io.InputStreamReader;
             return  System.getenv("APPDATA");
         }
 
+        public static String getUser() {
+            return System.getProperty("user.name");
+        }
+
         public static void main(String[] args){
             String cpuId = MiscUtil.getMotherboardSN();
             String sn = MiscUtil.getSerialNumber("C");

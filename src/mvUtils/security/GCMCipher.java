@@ -20,6 +20,11 @@ import java.security.SecureRandom;
  */
 public class GCMCipher {
     String xform = "AES/GCM/NoPadding";
+    SecretKey localKey;
+
+    public GCMCipher()  {
+        localKey =  makeKey(new byte[]{100, 78});
+    }
 
     public SecretKey makeKey(byte[] seed) {
         try {
@@ -35,7 +40,7 @@ public class GCMCipher {
     public byte[] encrypt(byte[] inpBytes) {
         byte[] retVal;
         try {
-            retVal = encrypt(inpBytes, makeKey(new byte[]{100, 78}), xform);
+            retVal = encrypt(inpBytes, localKey, xform);
         } catch (Exception e) {
             retVal = new byte[0];
         }
@@ -77,6 +82,13 @@ public class GCMCipher {
             encBytesStr = "";
         return encBytesStr;
     }
+
+    /**
+     *
+     * @param inpString
+     * @param key   thekey itself is encrypted
+     * @return
+     */
     
     public String decryptStringWithKey2(String inpString, String key) {
         String encBytesStr;
@@ -126,7 +138,7 @@ public class GCMCipher {
     public byte[] decrypt(byte[] inpBytes) {
         byte[] retVal;
         try {
-            retVal = decrypt(inpBytes, makeKey(new byte[]{100, 78}), xform);
+            retVal = decrypt(inpBytes, localKey, xform);
         } catch (Exception e) {
             retVal = new byte[0];
         }

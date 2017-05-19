@@ -2,9 +2,9 @@ package mvUtils.jsp;
 
 import mvUtils.display.ErrorStatAndMsg;
 
-import javax.jnlp.BasicService;
-import javax.jnlp.ServiceManager;
-import javax.jnlp.UnavailableServiceException;
+//import javax.jnlp.BasicService;
+//import javax.jnlp.ServiceManager;
+//import javax.jnlp.UnavailableServiceException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,18 +25,18 @@ public class JSPConnection {
     public boolean allOK = true;
     String jspPath;
 
-    public JSPConnection() {
-        try {
-            BasicService basicService = (BasicService)
-                    ServiceManager.lookup("javax.jnlp.BasicService");
-//            trace("JSPConnection.32: basicService = " + basicService);
-            codeBase = basicService.getCodeBase();
-//            trace("JSPConnection.34: codeBase = " + codeBase);
-        } catch (UnavailableServiceException e) {
-            allOK = false;
-            trace("JSPConnection.34: " + e.getMessage());
-        }
-    }
+//    public JSPConnection() {
+//        try {
+//            BasicService basicService = (BasicService)
+//                    ServiceManager.lookup("javax.jnlp.BasicService");
+////            trace("JSPConnection.32: basicService = " + basicService);
+//            codeBase = basicService.getCodeBase();
+////            trace("JSPConnection.34: codeBase = " + codeBase);
+//        } catch (UnavailableServiceException e) {
+//            allOK = false;
+//            trace("JSPConnection.34: " + e.getMessage());
+//        }
+//    }
 
     public JSPConnection(URL codeBase) {
         this.codeBase = codeBase;

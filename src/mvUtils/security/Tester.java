@@ -28,8 +28,8 @@ public class Tester {
         encBytesStr = encBytesStr.replace("[", "").replace("]", "");
         byte[] d = cipher.byteStringToBytes(encBytesStr);
 
-        String keyString = cipher.bytesToByteString(seed);
-        String encStr = cipher.encryptStringWithKey(data, keyString);
+        String keyString = "0462F36937A98A192E21159541CF5A4"; // cipher.bytesToByteString(seed);
+        String encStr = "71DDE0BAA45FF367C80A5F4F796C9139AEF0444E852B0987619950B2" ; // cipher.encryptStringWithKey(data, keyString);
         System.out.println("encrypted with String " + keyString + ":" +  encStr);
 
         String decStr = cipher.decryptStringWithKey2(encStr, keyString); //cipher.bytesToByteString(cipher.encrypt(seed)));

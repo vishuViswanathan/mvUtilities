@@ -127,7 +127,7 @@ public class MachineCheck {
 
     public boolean checkKey(String machineID, String key, int modifier) {
 //        if (modifier > 0)
-//            machineID += ("" + modifier).trim();
+//            machineID += ("" + ``).trim();
         return getKey(machineID, modifier).equals(key);
     }
 

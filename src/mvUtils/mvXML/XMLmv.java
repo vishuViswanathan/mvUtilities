@@ -15,7 +15,6 @@ public class XMLmv {
         // format checking to be added here
     }
 
-
     public static ValAndPos getTag(String data, String tag, int pos) {
         if (data.length() > (2 * tag.length() + 5)) {
             String lcTag = tag.toLowerCase();
@@ -32,6 +31,12 @@ public class XMLmv {
         }
         else
             return new ValAndPos("", pos);
+    }
+
+    public static String getStringVal(String data, String tag) {
+        ValAndPos vp;
+        vp = getTag(data, tag, 0);
+        return vp.val;
     }
 
     public static ValAndPos getTag(String data, String tag) {

@@ -47,6 +47,10 @@ public class GCMCipher {
         return retVal;
     }
 
+    public String encrypt(String inString)  {
+        return bytesToByteString(encrypt(inString.getBytes()));
+    }
+
     /**
      *
      * @param inpString
@@ -143,6 +147,10 @@ public class GCMCipher {
             retVal = new byte[0];
         }
         return retVal;
+    }
+
+    public String decrypt(String encryptedByteStr) {
+        return new String(decrypt(byteStringToBytes(encryptedByteStr)));
     }
 
     /**

@@ -3,8 +3,7 @@ import mvUtils.mvXML.XMLmv;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -26,15 +25,15 @@ public class PostToWebSite {
         this.basePath = basePath;
     }
 
-    public String getByPOSTRequest(String destination, HashMap<String, String> params, int maxResponseLength) {
+    public String getByPOSTRequest(String destination, HashMap<String, String> params, long maxResponseLength) {
         List<NameValuePair> list = new ArrayList<>(params.size());
         Set keys = params.keySet();
-        for (Object o:keys)
-            list.add(new BasicNameValuePair((String)o, params.get(o)));
+        for (Object o : keys)
+            list.add(new BasicNameValuePair((String) o, params.get(o)));
         return getByPOSTRequest(destination, list, maxResponseLength);
     }
 
-    public String getByPOSTRequest(String destination, List<NameValuePair> params, int maxResponseLength) {
+    public String getByPOSTRequest(String destination, List<NameValuePair> params, long maxResponseLength) {
         String retVal = "";
         try {
             HttpClient httpClient = new DefaultHttpClient();
@@ -47,11 +46,18 @@ public class PostToWebSite {
             if (entity != null) {
                 // The try-with-resources Statement (InputStream isi AutoClosable and closed automatically
                 // on completion of try() statement
-                try(InputStream instream = entity.getContent()) {
-                    byte[] data = new byte[maxResponseLength + 1]; // maximum expected
-                    int len = instream.read(data);
-                    if (len > 0)
-                        retVal = new String(data);
+                try (InputStream instream = entity.getContent()) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(instream));
+                    StringBuilder data = new StringBuilder();
+                    String line;
+                    while (data.length() < maxResponseLength && (line = reader.readLine()) != null) {
+                        data.append(line);
+                    }
+                    retVal = data.toString();
+//                    byte[] data = new byte[maxResponseLength + 1]; // maximum expected
+//                    int len = instream.read(data);
+//                    if (len > 0)
+//                        retVal = new String(data);
                 }
             }
         } catch (IOException e) {
@@ -60,7 +66,15 @@ public class PostToWebSite {
 //            retVal =  e.getMessage();
         }
         return retVal;
+    }
 
-
+    public static void main(String[] args) {
+        PostToWebSite jspReq = new PostToWebSite("http://HYPWAP02:9080/fceCalculations/jsp/");
+        HashMap<String, String> params = new HashMap<>();
+        params.put("user", "viswanathanm");
+        params.put("appCode", ("" + 100).trim());
+        params.put("mID", "abcd1234");
+        String response = jspReq.getByPOSTRequest("getAppKey.jsp", params, 2000l);
+        System.out.println(response);
     }
 }

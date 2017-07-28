@@ -15,7 +15,7 @@ import java.security.SecureRandom;
 public class Tester {
     public static void main(String[] unused) throws Exception {
         GCMCipher cipher = new GCMCipher();
-        byte[] seed = {17, 04, 21, 100, 64, 15}; // this has to be changed  could YY, mm, dd, constants
+        byte[] seed = {17, 04}; // this has to be changed  could YY, mm, dd, constants
          String data = "J2EExx&*2#";
         byte[] encBytes = cipher.encrypt(data, seed);
         String decString = cipher.decrypt(encBytes, seed);

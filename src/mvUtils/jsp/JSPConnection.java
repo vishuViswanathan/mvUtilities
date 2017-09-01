@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -25,21 +26,34 @@ public class JSPConnection {
     public boolean allOK = true;
     String jspPath;
 
-//    public JSPConnection() {
-//        try {
-//            BasicService basicService = (BasicService)
-//                    ServiceManager.lookup("javax.jnlp.BasicService");
-////            trace("JSPConnection.32: basicService = " + basicService);
-//            codeBase = basicService.getCodeBase();
-////            trace("JSPConnection.34: codeBase = " + codeBase);
-//        } catch (UnavailableServiceException e) {
-//            allOK = false;
-//            trace("JSPConnection.34: " + e.getMessage());
-//        }
-//    }
-
     public JSPConnection(URL codeBase) {
         this.codeBase = codeBase;
+    }
+
+    public JSPConnection(String path) throws Exception {
+        String[] urlParts = path.split("/");
+        String amAlive = "http://" + urlParts[0] + "/amAlive/amAlive.html";
+        if (!isAvailable(new URL(amAlive)))
+            throw new Exception("Unable to check if server is alive on " + amAlive);
+        this.codeBase = new URL("http://" + path);
+    }
+
+    boolean isAvailable(URL url){
+        boolean retVal = false;
+        try {
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Connection", "close");
+            connection.setConnectTimeout(10000); // Timeout 10 seconds
+            connection.connect();
+            // If the web service is available
+            if (connection.getResponseCode() == 200) {
+                retVal = true;
+            }
+            connection.disconnect();
+        } catch (Exception e) {
+            ;
+        }
+        return retVal;
     }
 
     public ErrorStatAndMsg getData(String jspPath, Hashtable<String, String> query) {

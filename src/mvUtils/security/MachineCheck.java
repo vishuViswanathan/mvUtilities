@@ -14,24 +14,38 @@ import java.net.UnknownHostException;
  * To change this template use File | Settings | File Templates.
  */
 public class MachineCheck {
-    public String getMachineIDOLD() {
-        String retVal = "";
-        try {
-            InetAddress ip = InetAddress.getLocalHost();
-//            debug("Current IP address : " + ip.getHostAddress());
-            NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+    public enum MachineStat {
+        CANRUN("Yes"),
+        CANNOTRUN("No"),
+        NOMACHINERECORD("NM"),
+        DIFFERENTMACHINE("DM");
+        private final String stat;
 
-            byte[] mac = network.getHardwareAddress();
-            if (mac == null)
-                debug("Could not get mac");
-            else
-                retVal = produceIDString(mac);
-        } catch (UnknownHostException e) {
-            debug("Host no known");
-        } catch (SocketException e){
-            debug("Socket error");
+        MachineStat(String machineStat) {
+            this.stat = machineStat;
         }
-        return retVal;
+
+        public String getValue() {
+            return name();
+        }
+
+        @Override
+        public String toString() {
+            return stat;
+        }
+
+        public static MachineStat getEnum(String text) {
+            MachineStat retVal = null;
+            if (text != null) {
+                for (MachineStat b : MachineStat.values()) {
+                    if (text.equalsIgnoreCase(b.stat)) {
+                        retVal = b;
+                        break;
+                    }
+                }
+            }
+            return retVal;
+        }
     }
 
     public String getMachineID() {
@@ -126,8 +140,6 @@ public class MachineCheck {
     }
 
     public boolean checkKey(String machineID, String key, int modifier) {
-//        if (modifier > 0)
-//            machineID += ("" + ``).trim();
         return getKey(machineID, modifier).equals(key);
     }
 

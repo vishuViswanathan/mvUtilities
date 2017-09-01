@@ -253,7 +253,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
         String txt = format.format(val);
         setText(txt);
         isInError();
-        showError();
+//        showError();
         notify = true;
     }
 

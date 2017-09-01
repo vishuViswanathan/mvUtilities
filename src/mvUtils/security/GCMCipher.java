@@ -87,6 +87,12 @@ public class GCMCipher {
         return encBytesStr;
     }
 
+    public String encryptStringWithKey2(String inpString, String encryptedKey) {
+        String encBytesStr;
+        byte[] trueKeyBytes = decrypt(byteStringToBytes(encryptedKey));
+        return encryptStringWithKey(inpString, bytesToByteString(trueKeyBytes));
+    }
+
     /**
      *
      * @param inpString

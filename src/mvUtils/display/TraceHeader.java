@@ -16,13 +16,13 @@ public class TraceHeader implements Serializable{
 	}
 	
     public TraceHeader(String xName, String xUnits,  String yName, String yUnits) {
-        yName = yName;
+        this.yName = yName;
         this.xUnits = xUnits;
         this.yUnits = yUnits;
-        traceName = yName + ((yUnits.length() > 0) ? ("(" + yUnits + ")") : "");
+        traceName = yName + ((yUnits.length() > 0) ? (" (" + yUnits + ")") : "");
         this.xName = xName;
-        xNameWithUnits = xName + "(" + xUnits + ")";
-        yNameWithUnits = yName + "(" + yUnits + ")";
+        xNameWithUnits = xName + ((xUnits.length() > 0) ? " (" + xUnits + ")" : "");
+        yNameWithUnits = yName + ((yUnits.length() > 0) ? " (" + yUnits + ")" : "");
     }
 
     public TraceHeader(String xName, String xUnits,  String xFormat, String yName, String yUnits, String yFormat) {

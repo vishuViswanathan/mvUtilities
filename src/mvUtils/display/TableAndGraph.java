@@ -17,7 +17,7 @@ import java.util.StringTokenizer;
  * To change this template use File | Settings | File Templates.
  */
 public class TableAndGraph extends GraphInfoAdapter {
-    TraceHeader header;
+    TraceHeader header = new TraceHeader("", "", "");
     int maxLen;
     DoublePoint[] dp;
     NTFChain[][] colData;
@@ -57,8 +57,8 @@ public class TableAndGraph extends GraphInfoAdapter {
     public int populate(TraceHeader header, XYArray arr, boolean showAll) {
         int retVal = 0;
         initData(showAll);
-        if (this.header == null)
-            this.header = new TraceHeader("", "", "");
+//        if (this.header == null)
+//            this.header = new TraceHeader("", "", "");
         header.copyTo(this.header);
         String xName = "", yName = "";
         String xFormat = "", yFormat = "";
@@ -115,53 +115,54 @@ public class TableAndGraph extends GraphInfoAdapter {
     JScrollPane tableScrollP;
 
     public JPanel dataPanel() {
-        JPanel colHeader = new JPanel(new GridBagLayout());
-        GridBagConstraints gbcH = new GridBagConstraints();
-        Insets ins = new Insets(1, 20, 1, 2);
-        gbcH.insets = ins;
-        gbcH.gridx = 0;
-        gbcH.gridy = 0;
-        colHeader.add(new JLabel(" "), gbcH);
-        gbcH.gridx++;
-        lXname = new JLabel("X Values");
-        colHeader.add(lXname, gbcH);
-        gbcH.gridx++;
-        lYname = new JLabel("Y Values");
-        colHeader.add(lYname, gbcH);
-
-        JPanel jp = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = ins;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        for (int r = 0; r < colData.length; r++) {
-            gbc.gridx = 0;
-            gbc.gridy++;
-            jp.add(new JLabel("" + (r + 1)), gbc);
-            gbc.gridx++;
-            jp.add(colData[r][0], gbc);
-            gbc.gridx++;
-            jp.add(colData[r][1], gbc);
-        }
-        JScrollPane sp = new JScrollPane(jp);
-        tableScrollP = sp;
-        sp.setColumnHeaderView(colHeader);
-//        sp.setPreferredSize(new Dimension(jp.getPreferredSize().width + 50, 400));
-        sp.setPreferredSize(new Dimension(300, 400));
-        JScrollBar sb = sp.getVerticalScrollBar();
-        sb.setUnitIncrement(lXname.getPreferredSize().height + ins.top + ins.bottom + 4);
         JPanel outerP = new JPanel(new BorderLayout());
-        outerP.add(sp, BorderLayout.CENTER);
-        copyText = new TextArea("");
-        copyText.setPreferredSize(new Dimension(150, 200));
-        copyPan.add(new JLabel("Past from Excel below"), BorderLayout.NORTH);
-        copyPan.add(copyText, BorderLayout.CENTER);
-        pbTransfer.addActionListener(new TransferToTable());
-        copyPan.add(pbTransfer, BorderLayout.SOUTH);
+//        if (colData.length > 0 && colData[0][0].getData() > -1) {
+            JPanel colHeader = new JPanel(new GridBagLayout());
+            GridBagConstraints gbcH = new GridBagConstraints();
+            Insets ins = new Insets(1, 20, 1, 2);
+            gbcH.insets = ins;
+            gbcH.gridx = 0;
+            gbcH.gridy = 0;
+            colHeader.add(new JLabel("SlNo. "), gbcH);
+            gbcH.gridx++;
+            lXname = new JLabel(header.getxName());
+            colHeader.add(lXname, gbcH);
+            gbcH.gridx++;
+            lYname = new JLabel(header.getyName());
+            colHeader.add(lYname, gbcH);
 
-        outerP.add(copyPan, BorderLayout.EAST);
-        dataPanel = jp;
+            JPanel jp = new JPanel(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = ins;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            for (int r = 0; r < colData.length; r++) {
+                gbc.gridx = 0;
+                gbc.gridy++;
+                jp.add(new JLabel("" + (r + 1)), gbc);
+                gbc.gridx++;
+                jp.add(colData[r][0], gbc);
+                gbc.gridx++;
+                jp.add(colData[r][1], gbc);
+            }
+            JScrollPane sp = new JScrollPane(jp);
+            tableScrollP = sp;
+            sp.setColumnHeaderView(colHeader);
+//        sp.setPreferredSize(new Dimension(jp.getPreferredSize().width + 50, 400));
+            sp.setPreferredSize(new Dimension(300, 400));
+            JScrollBar sb = sp.getVerticalScrollBar();
+            sb.setUnitIncrement(lXname.getPreferredSize().height + ins.top + ins.bottom + 4);
+            outerP.add(sp, BorderLayout.CENTER);
+            copyText = new TextArea("");
+            copyText.setPreferredSize(new Dimension(150, 200));
+            copyPan.add(new JLabel("Past from Excel below"), BorderLayout.NORTH);
+            copyPan.add(copyText, BorderLayout.CENTER);
+            pbTransfer.addActionListener(new TransferToTable());
+            copyPan.add(pbTransfer, BorderLayout.SOUTH);
 
+            outerP.add(copyPan, BorderLayout.EAST);
+            dataPanel = jp;
+//        }
         return outerP;
     }
 

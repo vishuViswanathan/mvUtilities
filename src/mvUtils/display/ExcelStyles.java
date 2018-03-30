@@ -22,28 +22,28 @@ public class ExcelStyles {
     public CellStyle csHeader1, csHeader2, csNormal, csNormalBold, csTextWrap, csTextWrapBold;
     public CellStyle csBorderedHeader2;
     public CellStyle csDescript, csNumData1, csNumData2, csNumData;
-    public short borderLine1, borderLine;
+    public BorderStyle borderLine1, borderLine;
     org.apache.poi.ss.usermodel.Font fontNormal, fontBold10, fontBold11, fontBold12;
 
     public ExcelStyles(Workbook wb) {
         this.wb = wb;
         dataFormat = wb.createDataFormat();
-        borderLine1 = CellStyle.BORDER_THICK;
-        borderLine = CellStyle.BORDER_THIN;
+        borderLine1 = BorderStyle.THICK;
+        borderLine = BorderStyle.THIN;
         createFonts();
         createSplStyles();
     }
 
-    public void setCellValue(Sheet sheet, int row, int col, String value, CellStyle style, int width, short border) {
+    public void setCellValue(Sheet sheet, int row, int col, String value, CellStyle style, int width, BorderStyle border) {
         setCellValue(sheet, row, col, value, style, width);
         setAllBorder(sheet, row, col, border);
      }
 
-    public void setCellValue(Sheet sheet, int row, int col, Double value, CellStyle style, int width, short border) {
+    public void setCellValue(Sheet sheet, int row, int col, Double value, CellStyle style, int width, BorderStyle border) {
         setCellValue(sheet, row, col, value, style, width);
         setAllBorder(sheet, row, col, border);    }
 
-    public void setCellValue(Sheet sheet, int row, int col, Date value, CellStyle style, int width, short border) {
+    public void setCellValue(Sheet sheet, int row, int col, Date value, CellStyle style, int width, BorderStyle border) {
         setCellValue(sheet, row, col, value, style, width);
         setAllBorder(sheet, row, col, border);    }
 
@@ -89,22 +89,22 @@ public class ExcelStyles {
         c.setCellValue(value);
     }
 
-    public void setCellValue(Sheet sheet, int row, int col, String value, short border) {
+    public void setCellValue(Sheet sheet, int row, int col, String value, BorderStyle border) {
         setCellValue(sheet, row, col, value);
         setAllBorder(sheet, row, col, border);
     }
 
-    public void setCellValue(Sheet sheet, int row, int col, Double value, short border) {
+    public void setCellValue(Sheet sheet, int row, int col, Double value, BorderStyle border) {
         setCellValue(sheet, row, col, value);
         setAllBorder(sheet, row, col, border);
     }
 
-    public void setCellValue(Sheet sheet, int row, int col, Double value, String fmtStr, short border) {
+    public void setCellValue(Sheet sheet, int row, int col, Double value, String fmtStr, BorderStyle border) {
         setCellValue(sheet, row, col, value, fmtStr);
         setAllBorder(sheet, row, col, border);
     }
 
-    public void setCellValue(Sheet sheet, int row, int col, Date value, short border) {
+    public void setCellValue(Sheet sheet, int row, int col, Date value, BorderStyle border) {
         setCellValue(sheet, row, col, value);
         setAllBorder(sheet, row, col, border);
     }
@@ -149,7 +149,7 @@ public class ExcelStyles {
             r = sheet.createRow(row);
         return r;
     }
-    Cell createCell(Row row, short column, short halign, CellStyle cs) {
+    Cell createCell(Row row, short column, HorizontalAlignment halign, CellStyle cs) {
         Cell cell = row.createCell(column);
         cs.setAlignment(halign);
         cell.setCellStyle(cs);
@@ -160,25 +160,25 @@ public class ExcelStyles {
         org.apache.poi.ss.usermodel.Font f = wb.createFont();
         f.setFontHeightInPoints((short) 10);
         f.setColor(Font.COLOR_NORMAL);
-        f.setBoldweight(Font.BOLDWEIGHT_NORMAL);
+        f.setBold(false);
         fontNormal = f;
 
         f = wb.createFont();
         f.setFontHeightInPoints((short) 10);
         f.setColor(Font.COLOR_NORMAL);
-        f.setBoldweight(Font.BOLDWEIGHT_BOLD);
+        f.setBold(true);
         fontBold10 = f;
 
         f = wb.createFont();
         f.setFontHeightInPoints((short) 11);
         f.setColor(Font.COLOR_NORMAL);
-        f.setBoldweight(Font.BOLDWEIGHT_BOLD);
+        f.setBold(true);
         fontBold11 = f;
 
         f = wb.createFont();
         f.setFontHeightInPoints((short) 12);
         f.setColor(Font.COLOR_NORMAL);
-        f.setBoldweight(Font.BOLDWEIGHT_BOLD);
+        f.setBold(true);
         fontBold12 = f;
     }
 
@@ -197,12 +197,12 @@ public class ExcelStyles {
 
         cs = wb.createCellStyle();
         cs.setFont(fontBold11);
-        cs.setAlignment(CellStyle.ALIGN_CENTER);
+        cs.setAlignment(HorizontalAlignment.CENTER);
         csHeader2 = cs;
 
         cs = wb.createCellStyle();
         cs.setFont(fontBold11);
-        cs.setAlignment(CellStyle.ALIGN_CENTER);
+        cs.setAlignment(HorizontalAlignment.CENTER);
         setAllBorder(cs, borderLine);
         csBorderedHeader2 = cs;
 
@@ -217,14 +217,14 @@ public class ExcelStyles {
 
     }
 
-    void setAllBorder(CellStyle cs,  short border) {
+    void setAllBorder(CellStyle cs,  BorderStyle border) {
         cs.setBorderTop(border);
         cs.setBorderRight(border);
         cs.setBorderBottom(border);
         cs.setBorderLeft(border);
     }
 
-    void setAllBorder(Sheet sheet, int row, int col, short border) {
+    void setAllBorder(Sheet sheet, int row, int col, BorderStyle border) {
         CellStyle cs = wb.createCellStyle();
         Cell cell = sheet.getRow(row).getCell(col);
         cs.cloneStyleFrom(cell.getCellStyle());
@@ -248,15 +248,16 @@ public class ExcelStyles {
                 cell.setCellStyle(cs);
             }
         }
-        sh.addMergedRegion(new CellRangeAddress(topRow, bottomRow, leftCol, rightCol));
+        if (topRow != bottomRow || leftCol != rightCol)
+            sh.addMergedRegion(new CellRangeAddress(topRow, bottomRow, leftCol, rightCol));
     }
 
-    public void drawBorder(Sheet sh, int row, int col, short border) {
+    public void drawBorder(Sheet sh, int row, int col, BorderStyle border) {
         drawBorder(sh, row,  row, col, col,  border);
     }
 
 
-    public void drawBorder(Sheet sh, int topRow, int bottomRow, int leftCol, int rightCol, short border) {
+    public void drawBorder(Sheet sh, int topRow, int bottomRow, int leftCol, int rightCol, BorderStyle border) {
         Row row;
         Cell cell;
         CellStyle cs, newcs;

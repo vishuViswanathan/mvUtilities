@@ -16,10 +16,13 @@ public class Tester {
     enum ForTest {AVAILABLE, NOTVAILBLE};
 
     public static void main(String[] unused) throws Exception {
-        System.out.println("ForTest = " + ForTest.NOTVAILBLE);
-        GCMCipher cipher = new GCMCipher();
-        byte[] seed = {0}; // this has to be changed  could YY, mm, dd, constants
+        GCMCipher encCipherO = new GCMCipher();
+        GCMCipher decCipherO = new GCMCipher();
+        GCMCipherNew encCipher = new GCMCipherNew();
+        GCMCipherNew decCipher = new GCMCipherNew();
+        byte[] seed = {100, 78}; // this has to be changed  could YY, mm, dd, constants
         String data = "viswanathanm";
+        /*
         String encyptedKey = cipher.bytesToByteString(cipher.encrypt(seed));
         String encryptedData = cipher.encryptStringWithKey2(data, encyptedKey);
         System.out.println("encryptedData = :[" + encryptedData + "]");
@@ -27,11 +30,19 @@ public class Tester {
         MachineCheck mc = new MachineCheck();
         String machineID = mc.getMachineID(true);
         String encryptedMachineID = cipher.encryptStringWithKey2(machineID, encyptedKey);
-        System.out.print("encryptedMachineID = [" + encryptedMachineID + "]");
+        System.out.println("encryptedMachineID = [" + encryptedMachineID + "]");
         System.out.println("decryptedData = " + cipher.decryptStringWithKey2(encryptedData, encyptedKey));
         System.out.println("resp :" + cipher.decryptStringWithKey2("81E8D74D093BC887403C903046A84DBC2B6E"  , encyptedKey));
 
         System.out.println("sofwarekey :" + cipher.decryptStringWithKey2("5920257ED046AA12DA11346540BF2CBCF871A9C7A35CE6F4687E85E53708A698", encyptedKey));
+*/
+        String plainEncryptedData = encCipherO.encrypt(data);
+        System.out.println("plainEncryptedData :" + plainEncryptedData);
+        System.out.println("decrypt of plainEncryptedData :" + decCipherO.decrypt(plainEncryptedData));
+
+        String keyEncryptedData = encCipherO.encryptStringWithKey(data, "D1A2");
+        System.out.println("keyEncryptedData :" + keyEncryptedData);
+        System.out.println("decrypt of keyEncryptedData :" + decCipherO.decryptStringWithKey(keyEncryptedData, "D1A2"));
 /*
         byte[] encBytes = cipher.encrypt(data, seed);
         String decString = cipher.decrypt(encBytes, seed);

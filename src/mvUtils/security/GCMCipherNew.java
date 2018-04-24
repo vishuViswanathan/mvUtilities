@@ -2,13 +2,10 @@ package mvUtils.security;
 
 import org.apache.poi.util.HexDump;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
+import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import javax.print.DocFlavor;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
@@ -18,18 +15,17 @@ import java.security.SecureRandom;
  * Time: 12:25 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GCMCipher {
+public class GCMCipherNew {
     String xform = "AES/GCM/NoPadding";
     SecretKey localKey;
 
-    public GCMCipher()  {
+    public GCMCipherNew()  {
         localKey =  makeKey(new byte[]{100, 78});
     }
 
     public SecretKey makeKey(byte[] seed) {
         try {
             KeyGenerator kg = KeyGenerator.getInstance("AES");
-//            SecureRandom sR = new SecureRandom(seed);
             SecureRandom sR = SecureRandom.getInstance("SHA1PRNG");
             sR.setSeed(seed);
             kg.init(128, sR); // 56 is the keysize. Fixed for DES
@@ -60,7 +56,7 @@ public class GCMCipher {
      * @return
      */
     public byte[] encrypt2(String inpString,
-                          byte[] keyBytes) {
+                           byte[] keyBytes) {
         byte[] trueKeyBytes = decrypt(keyBytes);
         if (trueKeyBytes.length > 0)
             return encrypt(inpString, trueKeyBytes);
@@ -101,7 +97,7 @@ public class GCMCipher {
      * @param key   thekey itself is encrypted
      * @return
      */
-    
+
     public String decryptStringWithKey2(String inpString, String key) {
         String encBytesStr;
         byte[] encryptedKeyBytes =  byteStringToBytes(key);
@@ -126,12 +122,18 @@ public class GCMCipher {
     }
 
     public byte[] encrypt(byte[] inpBytes,
-                                  SecretKey key, String xform) throws Exception {
+                          SecretKey key, String xform) throws Exception {
         Cipher cipher = Cipher.getInstance(xform);
         byte[] ivBytes = new byte[256 / Byte.SIZE];
         GCMParameterSpec gcmSpecWithIV = new GCMParameterSpec(128, ivBytes);
         cipher.init(Cipher.ENCRYPT_MODE, key, gcmSpecWithIV);
-        return cipher.doFinal(inpBytes);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher);
+        cipherOutputStream.write(inpBytes);
+        cipherOutputStream.flush();
+        cipherOutputStream.close();
+        return outputStream.toByteArray();
     }
 
     public String decryptStringWithKey(String encrypedString, String key) {
@@ -168,7 +170,7 @@ public class GCMCipher {
      * @return
      */
     public String decrypt2(byte[] inpBytes,
-                          byte[] keyBytes) {
+                           byte[] keyBytes) {
         byte[] trueKeyBytes = decrypt(keyBytes);
         if (trueKeyBytes.length > 0)
             return decrypt(inpBytes, trueKeyBytes);
@@ -197,12 +199,22 @@ public class GCMCipher {
     }
 
     public byte[] decrypt(byte[] inpBytes,
-                                  SecretKey key, String xform) throws Exception {
+                          SecretKey key, String xform) throws Exception {
         Cipher cipher = Cipher.getInstance(xform);
         byte[] ivBytes = new byte[256 / Byte.SIZE];
         GCMParameterSpec gcmSpecWithIV = new GCMParameterSpec(128, ivBytes);
         cipher.init(Cipher.DECRYPT_MODE, key, gcmSpecWithIV);
-        return cipher.doFinal(inpBytes);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayInputStream inStream = new ByteArrayInputStream(inpBytes);
+        CipherInputStream cipherInputStream = new CipherInputStream(inStream, cipher);
+        byte[] buf = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = cipherInputStream.read(buf)) >= 0) {
+            outputStream.write(buf, 0, bytesRead);
+        }
+
+        return outputStream.toByteArray();
     }
 
     public byte[] byteStringToBytes(String byteString)  {

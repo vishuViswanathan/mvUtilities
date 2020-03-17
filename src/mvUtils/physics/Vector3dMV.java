@@ -68,10 +68,15 @@ public class Vector3dMV extends Vector3d {
     }
 
     public Vector3dMV setMean(Tuple3d vec1, Tuple3d vec2) {
-        set(vec1);
-        add(vec2);
+        set(vec1.x + vec2.x, vec1.y + vec2.y, vec1.z + vec2.z);
         scale(0.5);
         return this;
+    }
+
+    public void scaleAndAdd(Tuple3d scaleThis, double scale) {
+       x += scaleThis.x * scale;
+       y += scaleThis.y * scale;
+       z += scaleThis.z * scale;
     }
 
     public boolean isNonZero() {
@@ -123,5 +128,15 @@ public class Vector3dMV extends Vector3d {
                 z = -z;
                 break;
         }
+    }
+
+    public static void main(String[] arg) {
+        Vector3dMV v1 = new Vector3dMV(10, 10, 30);
+        Vector3dMV v2 = new Vector3dMV(100, 200, 300);
+        v1.setMean(v1, v2);
+        System.out.println("v1 = " + v1);
+        Vector3dMV v3 = new Vector3dMV(10, 10, 30);
+        v3.setMean(v2, v3);
+        System.out.println("v3 = " + v3);
     }
 }

@@ -1,11 +1,6 @@
 package mvUtils.forTesting;
 
-import mvUtils.http.PostToWebSite;
-import mvUtils.mvXML.ValAndPos;
-import mvUtils.mvXML.XMLmv;
-import mvUtils.security.GCMCipher;
-
-import java.util.HashMap;
+import mvUtils.physics.Vector3dMV;
 
 /**
  * User: M Viswanathan
@@ -20,34 +15,23 @@ public class Test {
         while ((System.nanoTime() - startTime) < sleepTime) {}
     }
 
-    public static void main(String[] args) {
-        PostToWebSite jspReq =  new PostToWebSite("http://localhost:9080/fceCalculations/jsp/");
-//        PostToWebSite jspReq =  new PostToWebSite("http://localhost:9080/fceCalculations/jsp/");
-        HashMap<String, String> params = new HashMap<>();
-        GCMCipher cipher = new GCMCipher();
-//        String encrypedUSer = cipher.encrypt("viswanathanm");
-//        System.out.println("encrypedUSer :" + encrypedUSer);
-//        System.out.println("decryptyed encrypedUSer :" + cipher.decrypt(encrypedUSer));
+    static void debug(String title, Object val) {
+        System.out.println(title + ": " + val);
+    }
 
-
-        byte[] keyBytes = {11, 103};
-        String key =  cipher.bytesToByteString(keyBytes);
-        params.put("user", cipher.encryptStringWithKey("viswanathanm", key));
-        params.put("appCode", "100");
-        String ecryptedKey = cipher.bytesToByteString(cipher.encrypt(keyBytes));
-//        System.out.println("ecryptedKey : " + ecryptedKey);
-//        System.out.println("decryped ecryptedKey : " + cipher.decrypt(ecryptedKey));
-
-        params.put("key", cipher.bytesToByteString(cipher.encrypt(keyBytes)));
-        String response = jspReq.getByPOSTRequest("getAccessCode.jsp", params, 2000);
-        System.out.println(response);
-        if (response.length() > 0)  {
-            ValAndPos vp = XMLmv.getTag(response, "accessIDEncrypt", 0);
-            String accessIDEncrypt = vp.val;
-            System.out.println("accessIDEncrypt = " + accessIDEncrypt);
-            String accessID = cipher.decryptStringWithKey(accessIDEncrypt, key);
-            System.out.println("accessID = " + accessID);
-        }
+    public static void main (String[] argv) {
+        Vector3dMV v = new Vector3dMV(6, -4, 0);
+        debug("v Len", v.length());
+        Vector3dMV distance = new Vector3dMV(1.9152, 2.8828, 1);
+        debug("distance Len", distance.length());
+        Vector3dMV cross = new Vector3dMV();
+        debug("angle12", v.angle(distance));
+        debug("angle21", distance.angle(v));
+        cross.cross(v, distance);
+        debug("cross 1" , cross);
+        debug("len cross1", cross.length());
+        cross.scale(1 / distance.lengthSquared());
+        debug("cross 2" , cross);
+        debug("len cross2", cross.length());
     }
 }
-

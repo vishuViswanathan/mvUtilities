@@ -3,9 +3,9 @@ package mvUtils.file;
 import mvUtils.display.InputControl;
 import mvUtils.display.OneParameterDialog;
 import mvUtils.display.StatusWithMessage;
-import mvUtils.jnlp.JNLPFileHandler;
+//import mvUtils.jnlp.JNLPFileHandler;
 
-import javax.jnlp.FileContents;
+//import javax.jnlp.FileContents;
 import java.awt.*;
 import java.io.*;
 import java.security.MessageDigest;
@@ -23,7 +23,7 @@ public class AccessControl {
 
     PasswordIntensity intensity = PasswordIntensity.HIGH;
     final String accessFileCode = "accessData1234567890";
-    protected boolean asJNLP = false;
+//    protected boolean asJNLP = false;
     Vector<String[]> passList;
     final int maxFileLength = 100000;
     final String newLine = "\r\n";
@@ -116,9 +116,9 @@ public class AccessControl {
         return retVal;
     }
 
-    public void setAsJNLP()  {
-        this.asJNLP = true;
-    }
+//    public void setAsJNLP()  {
+//        this.asJNLP = true;
+//    }
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
@@ -261,23 +261,23 @@ public class AccessControl {
 
     public StatusWithMessage readPasswordFile() {
         StatusWithMessage retVal = new StatusWithMessage();
-        if (asJNLP) {
-            try {
-                FileContents fc = JNLPFileHandler.getReadFile(null, new String[]{suggestedExtension}, 0, 0);
-                if (fc != null) {
-                    long len = fc.getLength();
-                    if (len > 20 && len < maxFileLength) {
-                        String data = JNLPFileHandler.readFile(fc);
-                        retVal = takeDataFromString(data);
-                    }
-                    else
-                        retVal.addErrorMessage("Not an Access Data file :Too short/long a file for access Data");
-                }
-            } catch (IOException e) {
-                retVal.addErrorMessage("Problem in reading accessFile:" + e.getMessage());
-            }
-        }
-        else {
+//        if (asJNLP) {
+//            try {
+//                FileContents fc = JNLPFileHandler.getReadFile(null, new String[]{suggestedExtension}, 0, 0);
+//                if (fc != null) {
+//                    long len = fc.getLength();
+//                    if (len > 20 && len < maxFileLength) {
+//                        String data = JNLPFileHandler.readFile(fc);
+//                        retVal = takeDataFromString(data);
+//                    }
+//                    else
+//                        retVal.addErrorMessage("Not an Access Data file :Too short/long a file for access Data");
+//                }
+//            } catch (IOException e) {
+//                retVal.addErrorMessage("Problem in reading accessFile:" + e.getMessage());
+//            }
+//        }
+//        else {
             try {
                 File f = new File(filePath);
                 long len = f.length();
@@ -291,17 +291,17 @@ public class AccessControl {
             } catch (IOException e) {
                 retVal.addErrorMessage("IO error in reading access file");
             }
-        }
+//        }
         return retVal;
     }
 
     public StatusWithMessage saveToPasswordFile() {
         StatusWithMessage retVal = new StatusWithMessage();
-        if (asJNLP) {
-            if (!JNLPFileHandler.saveToFile(dataAsString(), suggestedExtension, suggestedFileName))
-                retVal.addErrorMessage("Some problem in saving to file");
-        }
-        else {
+//        if (asJNLP) {
+//            if (!JNLPFileHandler.saveToFile(dataAsString(), suggestedExtension, suggestedFileName))
+//                retVal.addErrorMessage("Some problem in saving to file");
+//        }
+//        else {
             try {
                 FileWriter fileWriter = new FileWriter(new File(filePath));
                 BufferedWriter bW = new BufferedWriter(fileWriter);
@@ -311,7 +311,7 @@ public class AccessControl {
             } catch (IOException e) {
                 retVal.addErrorMessage("IO problem in saving access");
             }
-        }
+//        }
         return retVal;
     }
 

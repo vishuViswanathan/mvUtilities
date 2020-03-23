@@ -18,11 +18,18 @@ public class SimpleDialog {
             op = new JOptionPane(tf, JOptionPane.INFORMATION_MESSAGE);
         }
         else
-            op = new JOptionPane(msg, JOptionPane.INFORMATION_MESSAGE);
+            op = new JOptionPane(msgComponent(msg), JOptionPane.INFORMATION_MESSAGE);
         JDialog dlg = op.createDialog(parentComponent, title);
         dlg.setLocationRelativeTo(parentComponent);
         dlg.toFront();
         dlg.setVisible(true);
+    }
+
+    static Object msgComponent(String msg) {
+        if (msg.startsWith("<html>"))
+            return new JLabel(msg);
+        else
+            return msg;
     }
 
     static public void showMessage(String title, String msg, boolean bCopyable) {
@@ -42,7 +49,7 @@ public class SimpleDialog {
     }
 
     static public void showError(Component parentComponent, String title, String msg) {
-        JOptionPane op = new JOptionPane(msg, JOptionPane.ERROR_MESSAGE);
+        JOptionPane op = new JOptionPane(msgComponent(msg), JOptionPane.ERROR_MESSAGE);
         JDialog dlg = op.createDialog(parentComponent, title);
         dlg.setLocationRelativeTo(parentComponent);
         dlg.toFront();
@@ -57,7 +64,7 @@ public class SimpleDialog {
         String[] options = {UIManager.getString("OptionPane.yesButtonText"),
                 UIManager.getString("OptionPane.noButtonText")};
         String defaultOptionString = (defaultOption) ? options[0] : options[1];
-        return JOptionPane.showOptionDialog(parentComponent, msg, title, JOptionPane.YES_NO_OPTION,
+        return JOptionPane.showOptionDialog(parentComponent, msgComponent(msg), title, JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE, null, options, defaultOptionString);
     }
 
@@ -82,6 +89,10 @@ public class SimpleDialog {
         System.out.println("response with defaultOption as true = " + response);
 //        SimpleDialog.showMessage(null, "Copyable message", "This is copyable message", true);
 //        SimpleDialog.showMessage(null, "Non-copyable message", "This is an NOT copyable message");
+        showError("The title", "This is a multiline long message " +
+                "sometbing that has to go on muiltiline displey not formatted ");
+        showError("The title", "<html>This is a multiline long message " +
+                "<br>some tbing that has to go <br>on multiline display formatted <br>as html. This is <u>underlined</b></u>");
         System.exit(0);
     }
 }

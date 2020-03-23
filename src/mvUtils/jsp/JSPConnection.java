@@ -2,13 +2,14 @@ package mvUtils.jsp;
 
 import mvUtils.display.ErrorStatAndMsg;
 
-import javax.jnlp.BasicService;
-import javax.jnlp.ServiceManager;
-import javax.jnlp.UnavailableServiceException;
+//import javax.jnlp.BasicService;
+//import javax.jnlp.ServiceManager;
+//import javax.jnlp.UnavailableServiceException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -25,14 +26,34 @@ public class JSPConnection {
     public boolean allOK = true;
     String jspPath;
 
-    public JSPConnection() {
+    public JSPConnection(URL codeBase) {
+        this.codeBase = codeBase;
+    }
+
+    public JSPConnection(String path) throws Exception {
+        String[] urlParts = path.split("/");
+        String amAlive = "http://" + urlParts[0] + "/amAlive/amAlive.html";
+        if (!isAvailable(new URL(amAlive)))
+            throw new Exception("Unable to check if server is alive on " + amAlive);
+        this.codeBase = new URL("http://" + path);
+    }
+
+    boolean isAvailable(URL url){
+        boolean retVal = false;
         try {
-            BasicService basicService = (BasicService)
-                    ServiceManager.lookup("javax.jnlp.BasicService");
-            codeBase = basicService.getCodeBase();
-        } catch (UnavailableServiceException e) {
-            allOK = false;
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Connection", "close");
+            connection.setConnectTimeout(10000); // Timeout 10 seconds
+            connection.connect();
+            // If the web service is available
+            if (connection.getResponseCode() == 200) {
+                retVal = true;
+            }
+            connection.disconnect();
+        } catch (Exception e) {
+            ;
         }
+        return retVal;
     }
 
     public ErrorStatAndMsg getData(String jspPath, Hashtable<String, String> query) {
@@ -42,6 +63,7 @@ public class JSPConnection {
             UrlWithStatus urlWithStatus = getURL(jspPath, query);
             if (urlWithStatus.ok) {
                 URL url = urlWithStatus.url;
+//                trace("JSPConnection.48: url = " + url);
                 try {
                     BufferedReader reader = new BufferedReader
                             (new InputStreamReader(url.openStream()));
@@ -124,5 +146,9 @@ public class JSPConnection {
             this.ok = false;
             this.msg = msg;
         }
+    }
+
+    void trace(String msg) {
+        System.out.println(msg);
     }
 }

@@ -217,7 +217,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
     public boolean isInError() {
         inError = false;
         if (isEditable()) {
-            double val = 0;
+            double val;
             textWithError = getText();
             String data = textWithError;
             if(chDec == ',')  {
@@ -253,7 +253,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
         String txt = format.format(val);
         setText(txt);
         isInError();
-        showError();
+//        showError();
         notify = true;
     }
 
@@ -333,7 +333,7 @@ public class NumberTextField extends JTextField implements ActionListener, Focus
         if (isInError()) {
             if (controller != null)
                 controller.enableNotify(false);
-            JOptionPane.showMessageDialog(null, errMsg + " [" + textWithError + "]", getName(), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, errMsg + " [" + textWithError + "]", getName(), JOptionPane.ERROR_MESSAGE);
             if (controller != null)
                 controller.enableNotify(true);
             if (!(parent == null))

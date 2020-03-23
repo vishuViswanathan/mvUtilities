@@ -7,7 +7,7 @@ import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
 import java.text.DecimalFormat;
 
-import static javafx.scene.input.KeyCode.X;
+// import static javafx.scene.input.KeyCode.X;
 
 /**
  * Created by M Viswanathan on 15 Jun 2014

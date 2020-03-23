@@ -1,6 +1,5 @@
 package mvUtils.display;
 
-
 import mvUtils.math.DoublePoint;
 import mvUtils.math.DoubleRange;
 import mvUtils.math.XYArray;
@@ -12,14 +11,13 @@ import java.awt.event.*;
 import java.util.StringTokenizer;
 
 /**
- * Created by IntelliJ IDEA.
  * User: M Viswanathan
- * Date: 10/30/12
- * Time: 12:04 PM
+ * Date: 09-Jun-17
+ * Time: 2:56 PM
  * To change this template use File | Settings | File Templates.
  */
-public class TraceBuilder extends GraphInfoAdapter {
-    TraceHeader header;
+public class TableAndGraph extends GraphInfoAdapter {
+    TraceHeader header = new TraceHeader("", "", "");
     int maxLen;
     DoublePoint[] dp;
     NTFChain[][] colData;
@@ -30,7 +28,7 @@ public class TraceBuilder extends GraphInfoAdapter {
     double xMin;
     DoubleRange xRange, yRange;
 
-    public TraceBuilder(InputControl control, int maxLen, DoubleRange xMaxRange, DoubleRange yMaxRange, String xFormat, String yFormat) {
+    public TableAndGraph(InputControl control, int maxLen, DoubleRange xMaxRange, DoubleRange yMaxRange, String xFormat, String yFormat) {
         this.maxLen = maxLen;
         this.xMaxRange = xMaxRange;
         this.yMaxRange = yMaxRange;
@@ -56,11 +54,11 @@ public class TraceBuilder extends GraphInfoAdapter {
 //        prepareGraphPanel();
     }
 
-    public int populate(TraceHeader header, XYArray arr) {
+    public int populate(TraceHeader header, XYArray arr, boolean showAll) {
         int retVal = 0;
-        initData();
-        if (this.header == null)
-            this.header = new TraceHeader("", "", "");
+        initData(showAll);
+//        if (this.header == null)
+//            this.header = new TraceHeader("", "", "");
         header.copyTo(this.header);
         String xName = "", yName = "";
         String xFormat = "", yFormat = "";
@@ -82,6 +80,8 @@ public class TraceBuilder extends GraphInfoAdapter {
                 yF.setTitle(yName);
                 yF.setFormat(yFormat);
                 yF.setData(arr.getYat(r));
+                xF.setVisible(true);
+                yF.setVisible(true);
             }
         }
         retVal = createDpoints();
@@ -115,52 +115,54 @@ public class TraceBuilder extends GraphInfoAdapter {
     JScrollPane tableScrollP;
 
     public JPanel dataPanel() {
-        JPanel colHeader = new JPanel(new GridBagLayout());
-        GridBagConstraints gbcH = new GridBagConstraints();
-        Insets ins = new Insets(1, 20, 1, 2);
-        gbcH.insets = ins;
-        gbcH.gridx = 0;
-        gbcH.gridy = 0;
-        colHeader.add(new JLabel(" "), gbcH);
-        gbcH.gridx++;
-        lXname = new JLabel("X Values");
-        colHeader.add(lXname, gbcH);
-        gbcH.gridx++;
-        lYname = new JLabel("Y Values");
-        colHeader.add(lYname, gbcH);
-
-        JPanel jp = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = ins;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        for (int r = 0; r < colData.length; r++) {
-            gbc.gridx = 0;
-            gbc.gridy++;
-            jp.add(new JLabel("" + (r + 1)), gbc);
-            gbc.gridx++;
-            jp.add(colData[r][0], gbc);
-            gbc.gridx++;
-            jp.add(colData[r][1], gbc);
-        }
-        JScrollPane sp = new JScrollPane(jp);
-        tableScrollP = sp;
-        sp.setColumnHeaderView(colHeader);
-        sp.setPreferredSize(new Dimension(jp.getPreferredSize().width + 50, 400));
-        JScrollBar sb = sp.getVerticalScrollBar();
-        sb.setUnitIncrement(lXname.getPreferredSize().height + ins.top + ins.bottom + 4);
         JPanel outerP = new JPanel(new BorderLayout());
-        outerP.add(sp, BorderLayout.CENTER);
-        copyText = new TextArea("");
-        copyText.setPreferredSize(new Dimension(150, 200));
-        copyPan.add(new JLabel("Past from Excel below"), BorderLayout.NORTH);
-        copyPan.add(copyText, BorderLayout.CENTER);
-        pbTransfer.addActionListener(new TransferToTable());
-        copyPan.add(pbTransfer, BorderLayout.SOUTH);
+//        if (colData.length > 0 && colData[0][0].getData() > -1) {
+            JPanel colHeader = new JPanel(new GridBagLayout());
+            GridBagConstraints gbcH = new GridBagConstraints();
+            Insets ins = new Insets(1, 20, 1, 2);
+            gbcH.insets = ins;
+            gbcH.gridx = 0;
+            gbcH.gridy = 0;
+            colHeader.add(new JLabel("SlNo. "), gbcH);
+            gbcH.gridx++;
+            lXname = new JLabel(header.getxName());
+            colHeader.add(lXname, gbcH);
+            gbcH.gridx++;
+            lYname = new JLabel(header.getyName());
+            colHeader.add(lYname, gbcH);
 
-        outerP.add(copyPan, BorderLayout.EAST);
-        dataPanel = jp;
+            JPanel jp = new JPanel(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = ins;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            for (int r = 0; r < colData.length; r++) {
+                gbc.gridx = 0;
+                gbc.gridy++;
+                jp.add(new JLabel("" + (r + 1)), gbc);
+                gbc.gridx++;
+                jp.add(colData[r][0], gbc);
+                gbc.gridx++;
+                jp.add(colData[r][1], gbc);
+            }
+            JScrollPane sp = new JScrollPane(jp);
+            tableScrollP = sp;
+            sp.setColumnHeaderView(colHeader);
+//        sp.setPreferredSize(new Dimension(jp.getPreferredSize().width + 50, 400));
+            sp.setPreferredSize(new Dimension(300, 400));
+            JScrollBar sb = sp.getVerticalScrollBar();
+            sb.setUnitIncrement(lXname.getPreferredSize().height + ins.top + ins.bottom + 4);
+            outerP.add(sp, BorderLayout.CENTER);
+            copyText = new TextArea("");
+            copyText.setPreferredSize(new Dimension(150, 200));
+            copyPan.add(new JLabel("Past from Excel below"), BorderLayout.NORTH);
+            copyPan.add(copyText, BorderLayout.CENTER);
+            pbTransfer.addActionListener(new TransferToTable());
+            copyPan.add(pbTransfer, BorderLayout.SOUTH);
 
+            outerP.add(copyPan, BorderLayout.EAST);
+            dataPanel = jp;
+//        }
         return outerP;
     }
 
@@ -197,100 +199,7 @@ public class TraceBuilder extends GraphInfoAdapter {
         }
     }
 
-    public JPanel dataPanelOLD() {
-        JPanel colHeader = new JPanel(new GridBagLayout());
-        GridBagConstraints gbcH = new GridBagConstraints();
-        Insets ins = new Insets(1, 20, 1, 2);
-        gbcH.insets = ins;
-        gbcH.gridx = 0;
-        gbcH.gridy = 0;
-        colHeader.add(new JLabel(" "), gbcH);
-        gbcH.gridx++;
-        lXname = new JLabel("X Values");
-        colHeader.add(lXname, gbcH);
-        gbcH.gridx++;
-        lYname = new JLabel("Y Values");
-        colHeader.add(lYname, gbcH);
-
-        JPanel jp = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = ins;
-//        gbc.gridx = 1;
-//        gbc.gridy = 0;
-//        lXname = new JLabel("X Values");
-//        jp.add(lXname, gbc);
-//        gbc.gridx++;
-//        lYname = new JLabel("Y Values");
-//        jp.add(lYname, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        for (int r = 0; r < colData.length; r++) {
-            gbc.gridx = 0;
-            gbc.gridy++;
-            jp.add(new JLabel("" + (r + 1)), gbc);
-            gbc.gridx++;
-            jp.add(colData[r][0], gbc);
-            gbc.gridx++;
-            jp.add(colData[r][1], gbc);
-        }
-        JScrollPane sp = new JScrollPane(jp);
-        sp.setColumnHeaderView(colHeader);
-        sp.setPreferredSize(new Dimension(jp.getPreferredSize().width + 50, 400));
-        JScrollBar sb = sp.getVerticalScrollBar();
-        sb.setUnitIncrement(lXname.getPreferredSize().height + ins.top + ins.bottom + 4);
-        JPanel outerP = new JPanel();
-        outerP.add(sp);
-        return outerP;
-    }
-
-    JScrollPane sp, hp;
     JPanel dataPanel;
-
-    public JPanel dataPanelTable() {
-        NumberTextField[][] data = new NumberTextField[maxLen][3];
-        String[] header = new String[]{"X Val", "Y Val"};
-        NumberTextField slNo;
-        for (int r = 0; r < maxLen; r++) {
-            slNo = new NumberTextField(control, r + 1, 6, false, 1, 100, "##0", "");
-            data[r][0] = slNo;
-            data[r][1] = colData[r][0];
-            data[r][2] = colData[r][1];
-        }
-        boolean freezeLeftCol = true;
-        dataTable = new NumberTextFieldTable(colData, header, false, dataChangesListener);
-        dataTable.setEnabled(false);
-        Object[][] rowHead = new Object[maxLen][1];
-        String[] rowHeadHead = new String[]{"SlNo"};
-        for (int r = 0; r < maxLen; r++)
-            rowHead[r][0] = r + 1;
-
-        JTable rowHeadT = new JTable(rowHead, rowHeadHead );
-        rowHeadT.setEnabled(false);
-        JPanel jp = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        sp = new JScrollPane(dataTable);
-        sp.setPreferredSize(dataTable.getPreferredSize());
-        sp.setBackground(SystemColor.lightGray);
-        hp = new JScrollPane(rowHeadT);
-        hp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        hp.setPreferredSize(rowHeadT.getPreferredSize());
-        sp.getVerticalScrollBar().addAdjustmentListener(
-                new AdjustmentListener() {
-                    public void adjustmentValueChanged(AdjustmentEvent e) {
-                        hp.getVerticalScrollBar().setValue(((JScrollBar)(e.getSource())).getValue());
-                        //To change body of implemented methods use File | Settings | File Templates.
-                    }
-                });
-        jp.add(hp, gbc);
-            gbc.gridx++;
-        jp.add(sp, gbc);
-        jp.updateUI();
-        dataPanel = jp;
-        return jp;
-    }
-
 
     GraphPanel gp;
 
@@ -316,10 +225,12 @@ public class TraceBuilder extends GraphInfoAdapter {
         return true;
     }
 
-    public void initData() {
+    public void initData(boolean showAll) {
         for (int r = 0; r < maxLen; r++) {
             colData[r][0].setData(xMaxRange.min - 1);
             colData[r][1].setData(yMaxRange.min);
+            colData[r][0].setVisible(showAll);
+            colData[r][1].setVisible(showAll);
         }
         dp = null;
         if (gp != null)

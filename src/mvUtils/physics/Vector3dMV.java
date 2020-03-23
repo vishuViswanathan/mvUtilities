@@ -5,6 +5,7 @@ import mvUtils.display.SmartFormatter;
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
 import java.text.DecimalFormat;
+import java.util.Random;
 
 /**
  * Created by M Viswanathan on 15 Jun 2014
@@ -32,6 +33,14 @@ public class Vector3dMV extends Vector3d {
     public Vector3dMV(double scale, Tuple3d vecRef) {
         super();
         scale(scale, vecRef); // super call
+    }
+
+    static public Vector3dMV getRandomVector(double minLen, double maxLen, Tuple3d axes, Random rd) {
+        double len = minLen + rd.nextDouble() * (maxLen - minLen);
+        Vector3d direction = new Vector3d(axes.x * (rd.nextDouble() - 0.5),
+                axes.y * (rd.nextDouble() - 0.5), axes.z * (rd.nextDouble() - 0.5));
+        direction.normalize();
+        return new Vector3dMV(len, direction);
     }
 
     public void scale(Tuple3d scale, Tuple3d vecRef) {
@@ -131,12 +140,13 @@ public class Vector3dMV extends Vector3d {
     }
 
     public static void main(String[] arg) {
-        Vector3dMV v1 = new Vector3dMV(10, 10, 30);
-        Vector3dMV v2 = new Vector3dMV(100, 200, 300);
-        v1.setMean(v1, v2);
-        System.out.println("v1 = " + v1);
-        Vector3dMV v3 = new Vector3dMV(10, 10, 30);
-        v3.setMean(v2, v3);
-        System.out.println("v3 = " + v3);
+        Random rd =new Random();
+        Vector3d v1 = new Vector3d(rd.nextDouble(), rd.nextDouble(), 0);
+
+        for (int n = 1; n < 20; n++){
+            Vector3dMV vect = Vector3dMV.getRandomVector(7,
+                    7, v1, rd);
+            System.out.println("vect = " + vect + ", " + vect.length());
+        }
     }
 }

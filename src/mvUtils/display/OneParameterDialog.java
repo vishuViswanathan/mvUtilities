@@ -160,11 +160,12 @@ public class OneParameterDialog extends JDialog {
         Container dlgP = getContentPane();
         if (bTextData) {
             if (textField != null)
-                textField.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        okButt.doClick();
-                    }
-                });
+                textField.addActionListener(e -> okButt.doClick());
+//                textField.addActionListener(new ActionListener() {
+//                    public void actionPerformed(ActionEvent e) {
+//                        okButt.doClick();
+//                    }
+//                });
         }
         else {
             if (tfVal != null)
@@ -245,5 +246,6 @@ public class OneParameterDialog extends JDialog {
         dlg.setVisible(true);
         if (dlg.isOk())
             System.out.println("New Value = " + dlg.getTextVal());
+        dlg = null;
     }
 }

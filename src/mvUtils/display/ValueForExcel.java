@@ -23,7 +23,11 @@ public class ValueForExcel {
         this.strValue = strValue;
         this.numValue = numValue;
         this.bNumeric = bNumeric;
-        this.fmtStr = fmtStr;
+        if (fmtStr.toUpperCase().contains("E"))
+            this.fmtStr = "0.00E+00";
+        else
+            this.fmtStr = fmtStr;
+
     }
 
     public ValueForExcel(boolean bBold, String strValue) {

@@ -51,6 +51,10 @@ public class Vector3dMV extends Vector3d {
         set(scale.x * x, scale.y * y, scale.z * z);
     }
 
+    public double projectionLength(Vector3d along) {
+        return dot(along) / along.length();
+    }
+
     public static Vector3dMV meanVector3dMV(Tuple3d vec1, Tuple3d vec2) {
         Vector3dMV vec = new Vector3dMV();
         vec.setMean(vec1, vec2);

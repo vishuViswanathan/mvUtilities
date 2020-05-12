@@ -15,7 +15,7 @@ public class TestSelectList {
     }
 
     Boolean showDlg(boolean sorted) {
-        ListSelect lS = new ListSelect(theList, sorted);
+        ListSelect lS = new ListSelect(theList, null, sorted);
         lS.showSelectionDlg();
         lS.takeAction();
         return true;

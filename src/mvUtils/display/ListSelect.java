@@ -12,16 +12,22 @@ public class ListSelect {
     HashMap<Selectable, JCheckBox> listAndAction;
     boolean sorted = false;
     int rows = 10;
-    public ListSelect(Selectable[] list, boolean sorted) {
+    boolean allSelected = true;
+    Component parent;
+
+    public ListSelect(Selectable[] list, Component parent, boolean sorted) {
         listAndAction = new HashMap<Selectable, JCheckBox>();
         this.sorted = sorted;
+        this.parent = parent;
         this. rows = list.length;
-        for (Selectable s: list)
+        for (Selectable s: list) {
+            allSelected &= s.isSelected();
             listAndAction.put(s, new JCheckBox(s.toString(), s.isSelected()));
+        }
     }
 
     public ListSelect(Selectable[] list) {
-        this(list, false);
+        this(list, null, false);
     }
 
     public void takeAction() {
@@ -31,6 +37,10 @@ public class ListSelect {
 
     public boolean showSelectionDlg() {
         SelectionDlg selDlg = new SelectionDlg(listAndAction);
+        if (parent == null)
+            selDlg.setLocation(100, 50);
+        else
+            selDlg.setLocationRelativeTo(parent);
         selDlg.setVisible(true);
         return true;
     }
@@ -42,14 +52,17 @@ public class ListSelect {
         SelectionDlg(HashMap<Selectable, JCheckBox> list) {
             setModal(true);
             Container outer;
-            if (rows > 10)
+            if (rows > 10) {
                 outer = new ScrollPane();
+                outer.setPreferredSize(new Dimension(200, 400));
+            }
             else
                 outer = new JPanel();
             JPanel jp = new JPanel();
             jp.setLayout(new BoxLayout(jp, BoxLayout.Y_AXIS));
             cbAll = new JCheckBox("Select All");
             jp.add(cbAll);
+            cbAll.setSelected(allSelected);
             cbAll.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

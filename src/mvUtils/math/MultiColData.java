@@ -20,7 +20,7 @@ import java.util.Vector;
  * Multi columns with same X values
  */
 public class MultiColData extends GraphInfoAdapter {
-    int MAXCOLS = 15;
+    int MAXCOLS = 31;
     int cols = 0;
     int rows;
     double[] xVals;
